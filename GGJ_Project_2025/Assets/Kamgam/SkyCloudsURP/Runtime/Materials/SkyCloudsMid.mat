@@ -31,6 +31,6 @@ Material:
     - _TessValue: 8
     - _VorSpeed: 0.05
     m_Colors:
-    - _Mask0: {r: -0.07034397, g: 0.48510838, b: -5.58, a: 0.7}
-    - _Mask1: {r: -3.69, g: -0.19, b: 1, a: 0.7}
+    - _Mask0: {r: 0, g: -999, b: 0, a: 0.001}
+    - _Mask1: {r: 0, g: -999, b: 0, a: 0.001}
   m_BuildTextureStacks: []
