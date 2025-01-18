@@ -1,8 +1,10 @@
 using UnityEngine;
+using System.Collections.Generic; // 引入以使用 List
 
 public class SceneSpawner : MonoBehaviour
 {
-    public GameObject bubblePrefab, bubbleParent, soapParent; // 泡泡的Prefab
+    public List<GameObject> bubblePrefabs; // 泡泡的Prefab列表
+    public GameObject bubbleParent, soapParent; // 泡泡和肥皂的父物体
     public GameObject soapPrefab; // 肥皂的Prefab
     public float minX = -8f; // 平面区域的最小X值
     public float maxX = 8f; // 平面区域的最大X值
@@ -45,8 +47,8 @@ public class SceneSpawner : MonoBehaviour
             // 确保肥皂不会生成在同一个网格单元
             do
             {
-                randomRow = Random.Range(0, rows);
-                randomColumn = Random.Range(0, columns);
+                randomRow = Random.Range(1, rows - 1);
+                randomColumn = Random.Range(1, columns - 1);
             } while (soapGrid[randomRow, randomColumn]);
 
             // 标记该网格单元已经生成了肥皂
@@ -73,8 +75,7 @@ public class SceneSpawner : MonoBehaviour
             soapPosition.z = Mathf.Clamp(soapPosition.z, minZ, maxZ);
 
             // 实例化肥皂Prefab
-            GameObject soap = Instantiate(soapPrefab, soapPosition, Quaternion.identity);
-
+            GameObject soap = Instantiate(soapPrefab, soapPosition, soapPrefab.transform.rotation);
             // 设置肥皂的父物体为当前Spawner，便于管理
             soap.transform.parent = soapParent.transform;
         }
@@ -110,12 +111,15 @@ public class SceneSpawner : MonoBehaviour
                 bubblePosition.x = Mathf.Clamp(bubblePosition.x, minX, maxX);
                 bubblePosition.z = Mathf.Clamp(bubblePosition.z, minZ, maxZ);
 
-                // 实例化泡泡Prefab
-                GameObject bubble = Instantiate(bubblePrefab, bubblePosition, Quaternion.identity);
+                // **随机选择一个泡泡Prefab**
+                GameObject randomBubblePrefab = bubblePrefabs[Random.Range(0, bubblePrefabs.Count)];
 
-                // 随机设置泡泡的缩放比例
+                // 实例化泡泡Prefab
+                GameObject bubble = Instantiate(randomBubblePrefab, bubblePosition, randomBubblePrefab.transform.rotation);
+
+                // 随机缩放泡泡
                 float randomScale = Random.Range(minBubbleScale, maxBubbleScale);
-                bubble.transform.localScale = Vector3.one * randomScale;
+                bubble.transform.localScale = new Vector3(randomScale, randomScale, randomScale);
 
                 // 设置泡泡的父物体为当前Spawner，便于管理
                 bubble.transform.parent = bubbleParent.transform;
@@ -123,7 +127,3 @@ public class SceneSpawner : MonoBehaviour
         }
     }
 }
-
-
-
-
