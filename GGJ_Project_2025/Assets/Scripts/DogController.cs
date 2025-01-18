@@ -2,118 +2,176 @@ using UnityEngine;
 
 public class DogController : MonoBehaviour
 {
-    public float moveSpeed = 6f;          // 狗的移动速度
-    public float revealDuration = 1f;    // 每次现身持续时间
-    public float hiddenInterval = 5f;    // 隐藏状态下的计时间隔
+    public float moveSpeed = 3f; // 狗的移动速度
+    private Rigidbody rb;
+    private MeshRenderer meshRenderer;
 
-    private Rigidbody rb;                // 狗的刚体组件
-    private MeshRenderer meshRenderer;   // 狗的MeshRenderer组件
-    private float timer = 0f;            // 计时器（共享主动和被动现身）
-    private bool isHidden = true;        // 是否处于隐藏状态
-    private bool isRevealing = false;    // 是否正在现身
-    private bool isPassiveReveal = false; // 是否是被动现身
+    public float hideTimer = 5f; // 隐藏计时器
+    public float forceRevealTimer = 1f; // 强制现身的计时器
+    private float currentHideTimer; // 当前隐藏计时器
+    public bool isVisible = true; // 狗是否可见
+    private bool isMoving = false; // 狗是否在移动
+    private bool isForcingReveal = false; // 是否在强制现身状态
 
-    void Start()
+    public float stopBufferTime = 0.2f; // 缓冲时间，当狗速度接近零时使用
+    private float stopBufferTimer = 0f; // 当前缓冲计时器
+
+    private void Start()
     {
-        // 获取刚体和MeshRenderer组件
         rb = GetComponent<Rigidbody>();
         meshRenderer = GetComponent<MeshRenderer>();
 
-        if (rb == null || meshRenderer == null)
+        // 初始化状态
+        SetVisibility(true);
+        currentHideTimer = hideTimer; // 初始化隐藏计时器
+    }
+
+    private void Update()
+    {
+        HandleMovement();
+        HandleHideTimer();
+    }
+
+    private void HandleMovement()
+    {
+        // 获取输入
+        float moveX = Input.GetAxis("HorizontalArrow");
+        float moveZ = Input.GetAxis("VerticalArrow");
+
+        Vector3 movement = new Vector3(moveX, 0, moveZ).normalized;
+        rb.velocity = movement * moveSpeed;
+
+        // 检查是否正在移动（速度是否大于某个阈值）
+        if (movement.magnitude > 0.1f) // 如果狗的移动输入大于阈值
         {
-            Debug.LogError("Missing Rigidbody or MeshRenderer component!");
-        }
-    }
+            stopBufferTimer = 0f; // 重置缓冲计时器
 
-    void Update()
-    {
-        Move();
-        HandleVisibility();
-    }
-
-    void Move()
-    {
-        // 获取方向键输入
-        float moveX = Input.GetAxis("HorizontalArrow"); // ←/→键
-        float moveZ = Input.GetAxis("VerticalArrow");   // ↑/↓键
-
-        // 设置刚体速度
-        Vector3 moveDirection = new Vector3(moveX, 0, moveZ).normalized;
-        rb.velocity = moveDirection * moveSpeed;
-    }
-
-    void HandleVisibility()
-    {
-        // 检查狗是否在移动
-        bool isMoving = rb.velocity.magnitude > 0.1f;
-
-        // 如果狗正在现身
-        if (isRevealing)
-        {
-            timer += Time.deltaTime;
-
-            // 如果是被动现身，现身期间不受移动影响
-            if (isPassiveReveal)
+            if (!isMoving)
             {
-                if (timer >= revealDuration)
+                isMoving = true;
+
+                // 如果狗开始移动，隐藏狗并重置计时器
+                if (!isForcingReveal)
                 {
-                    SetHidden(true); // 被动现身时间结束后隐藏
+                    SetVisibility(false);
+                    currentHideTimer = hideTimer; // 重置隐藏计时器
                 }
             }
-            else
+        }
+        else // 狗停止移动（速度接近零）
+        {
+            // 开始缓冲计时
+            stopBufferTimer += Time.deltaTime;
+
+            if (stopBufferTimer >= stopBufferTime) // 如果缓冲时间超过设定值
             {
-                // 如果是主动现身，移动时立即隐藏
                 if (isMoving)
                 {
-                    SetHidden(true);
-                }
-                else if (timer >= revealDuration)
-                {
-                    SetHidden(true); // 主动现身时间结束后隐藏
+                    isMoving = false;
+
+                    // 如果狗停止移动且不在强制现身状态，则主动现身
+                    if (!isForcingReveal)
+                    {
+                        SetVisibility(true);
+                    }
                 }
             }
-
-            return; // 现身期间不执行其他逻辑
         }
+    }
 
-        // 如果狗停止运动且当前隐藏，主动现身
-        if (!isMoving && isHidden)
+    private void HandleHideTimer()
+    {
+        // 如果狗不可见且不在强制现身状态，开始倒计时
+        if (!isVisible && !isForcingReveal)
         {
-            Reveal(false); // 主动现身
-            return;
-        }
-
-        // 如果狗在移动，累加计时器
-        if (isMoving)
-        {
-            timer += Time.deltaTime;
-            if (timer >= hiddenInterval)
+            currentHideTimer -= Time.deltaTime;
+            if (currentHideTimer <= 0)
             {
-                Reveal(true); // 被动现身
+                StartCoroutine(ForceReveal());
             }
         }
     }
 
-    void Reveal(bool passive)
+    public System.Collections.IEnumerator ForceReveal()
     {
-        SetHidden(false); // 现身
-        isRevealing = true;
-        isPassiveReveal = passive; // 标记是否为被动现身
-        timer = 0f; // 重置计时器
+        if (isForcingReveal) yield break; // 防止重复调用
+
+        isForcingReveal = true; // 标记为强制现身状态
+        Debug.Log("Dog is forced to reveal!"); // 调试输出
+
+        SetVisibility(true); // 强制现身
+
+        // 等待强制现身计时器完成
+        yield return new WaitForSeconds(forceRevealTimer);
+
+        // 强制现身结束后
+        isForcingReveal = false; // 退出强制现身状态
+
+        if (isMoving) // 如果狗正在移动
+        {
+            SetVisibility(false); // 重新隐藏狗
+            currentHideTimer = hideTimer; // 重置隐藏计时器
+        }
+        else // 如果狗未移动
+        {
+            SetVisibility(true); // 保持现身状态
+        }
     }
 
-    void SetHidden(bool hide)
+    private void SetVisibility(bool visible)
     {
-        isHidden = hide;
-        isRevealing = !hide;
-        meshRenderer.enabled = !hide; // 隐藏或显示狗的模型
+        // 如果狗正在强制现身，不允许其他逻辑覆盖可见性
+        if (isForcingReveal && !visible) return;
 
-        // 如果隐藏，则重新开始计时
-        if (hide)
+        bool wasVisible = isVisible; // 记录之前的状态
+        isVisible = visible;
+        meshRenderer.enabled = visible;
+        Debug.Log($"Dog visibility set to: {visible}"); // 调试输出
+
+        // 通知所有触发区域内的泡泡重新检测状态
+        NotifyNearbyBubbles(wasVisible);
+    }
+
+    private void NotifyNearbyBubbles(bool wasVisible)
+    {
+        float detectionRadius = 0.8f; // 调整检测范围，确保覆盖泡泡的触发范围
+        Collider[] colliders = Physics.OverlapSphere(transform.position, detectionRadius);
+        //Debug.Log($"Detected {colliders.Length} bubbles in range."); // 打印检测到的泡泡数量
+
+        foreach (Collider collider in colliders)
         {
-            timer = 0f;
+            GameObject obj = collider.gameObject;
+            if (obj.CompareTag("Bubble"))
+            {
+                BubbleController bubble = obj.GetComponent<BubbleController>();
+                if (bubble != null)
+                {
+                    // 如果狗从隐身变为现身，主动通知泡泡
+                    if (!wasVisible && isVisible)
+                    {
+                        bubble.OnTriggerEnter(GetComponent<Collider>());
+                    }
+
+                    // 通知泡泡重新检测状态
+                    bubble.CheckEntityStatus();
+                }
+            }
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Bubble"))
+        {
+            BubbleController bubble = other.GetComponent<BubbleController>();
+            if (bubble != null)
+            {
+                // 如果泡泡已经隐藏，且狗是隐身状态，则强制现身
+                if (!bubble.IsVisible() && !isVisible && !isForcingReveal)
+                {
+                    StartCoroutine(ForceReveal());
+                }
+            }
         }
     }
 }
-
-
