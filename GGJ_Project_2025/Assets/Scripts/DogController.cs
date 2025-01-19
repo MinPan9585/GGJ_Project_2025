@@ -40,6 +40,16 @@ public class DogController : MonoBehaviour
     // 新增代码：Animator 组件
     private Animator animator; // Animator 组件
 
+    [HideInInspector]
+    public GameObject dogBreathVfx;
+    [HideInInspector]
+    public GameObject dogDisappearVfx;
+
+    private void Awake()
+    {
+        dogBreathVfx = (GameObject)Resources.Load("VFX/DogBreath");
+        dogDisappearVfx = (GameObject)Resources.Load("VFX/DogDisappear");
+    }
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -101,6 +111,7 @@ public class DogController : MonoBehaviour
                 // 如果狗开始移动，隐藏狗并重置计时器
                 if (!isForcingReveal)
                 {
+                    Instantiate(dogDisappearVfx, transform.position, Quaternion.identity);
                     SetVisibility(false);
                     currentHideTimer = hideTimer; // 重置隐藏计时器
                 }
@@ -120,6 +131,7 @@ public class DogController : MonoBehaviour
                     // 如果狗停止移动且不在强制现身状态，则主动现身
                     if (!isForcingReveal)
                     {
+                        Instantiate(dogBreathVfx, transform.position, Quaternion.identity);
                         // 插入狗甩干的声音
                         if (DogAppear != null)
                         {
@@ -236,7 +248,7 @@ public class DogController : MonoBehaviour
 
         isForcingReveal = true;
         Debug.Log("Dog is forced to reveal!");
-
+        Instantiate(dogBreathVfx, transform.position, Quaternion.identity);
         SetVisibility(true);
 
         yield return new WaitForSeconds(revealDuration);
@@ -245,11 +257,13 @@ public class DogController : MonoBehaviour
 
         if (isMoving)
         {
+            Instantiate(dogDisappearVfx, transform.position, Quaternion.identity);
             SetVisibility(false);
             currentHideTimer = hideTimer;
         }
         else
         {
+            Instantiate(dogBreathVfx, transform.position, Quaternion.identity);
             SetVisibility(true);
         }
     }
