@@ -183,8 +183,16 @@ public class PlayerController : MonoBehaviour
 
         SpeedSkillBar.fillAmount = 1; // 技能条从0开始
         moveSpeed *= speedMultiplier; // 增加移动速度
+
+        // 播放加速音效
         if (!SpeedUp.isPlaying)
             SpeedUp.Play();
+
+        // **设置Animator的SpeedUp为true**
+        if (animator != null)
+        {
+            animator.SetBool("SpeedUp", true);
+        }
 
         float elapsedTime = 0f;
         while (elapsedTime < speedDuration)
@@ -199,8 +207,16 @@ public class PlayerController : MonoBehaviour
         isSpeedActive = false;
         SpeedSkillBarContainer.SetActive(false); // 隐藏技能条
         SpeedSkillIconContainer.SetActive(true); // 显示技能图标
+
+        // **恢复Animator的SpeedUp为false**
+        if (animator != null)
+        {
+            animator.SetBool("SpeedUp", false);
+        }
+
         StartCoroutine(SpeedCooldown()); // 开始冷却
     }
+
 
     private void CheckDogDistance()
     {
