@@ -34,6 +34,17 @@ public class PlayerController : MonoBehaviour
 
     public Animator animator; // 自定义的Animator
 
+    [HideInInspector]
+    public GameObject accelerateVfx;
+    [HideInInspector]
+    public GameObject soapVfx;
+
+    private void Awake()
+    {
+        accelerateVfx = (GameObject)Resources.Load("VFX/Accelerate");
+        soapVfx = (GameObject)Resources.Load("VFX/StepOnSoapTwo");
+    }
+
     void Start()
     {
         strikeSc = FindObjectOfType<QuickStrikeManager>();
@@ -119,6 +130,7 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator Slip()
     {
+        Instantiate(soapVfx, transform.position, Quaternion.identity);
         if (!slipsound.isPlaying)
             slipsound.Play();
 
@@ -184,6 +196,7 @@ public class PlayerController : MonoBehaviour
         SpeedSkillBar.fillAmount = 1; // 技能条从0开始
         moveSpeed *= speedMultiplier; // 增加移动速度
 
+        Instantiate(accelerateVfx, transform.position, Quaternion.identity);
         // 播放加速音效
         if (!SpeedUp.isPlaying)
             SpeedUp.Play();
