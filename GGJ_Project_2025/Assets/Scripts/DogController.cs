@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI; // 引入 UI 命名空间
+using UnityEngine.Audio;
 
 public class DogController : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class DogController : MonoBehaviour
 
     private Coroutine fillBarCoroutine; // 用于平滑回满的协程
     private QuickStrikeManager strikeSc;
+    public AudioSource DogAppear, DogBreath;
 
     private void Start()
     {
@@ -181,6 +183,18 @@ public class DogController : MonoBehaviour
 
         bool wasVisible = isVisible; // 记录之前的状态
         isVisible = visible;
+        //插入狗甩干的声音
+        if (visible)
+        {
+            if (!DogAppear.isPlaying)
+                DogAppear.Play();
+        }
+        else
+        {
+            if (DogAppear.isPlaying)
+                DogAppear.Stop();
+        }
+
         meshRenderer.enabled = visible;
         Debug.Log($"Dog visibility set to: {visible}"); // 调试输出
 
