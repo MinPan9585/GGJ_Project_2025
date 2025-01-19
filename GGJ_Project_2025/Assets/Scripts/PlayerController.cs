@@ -7,7 +7,8 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 5f; // 主人移动速度
     public float slipTime = 1f; // 滑倒时间
     public GameObject SlipBar; // 滑倒条
-    public GameObject SpeedSkillIcon; // 加速技能图标
+    public GameObject SpeedSkillBarContainer; // 控制技能条的显示/隐藏
+    public GameObject SpeedSkillIconContainer; // 控制技能图标的显示/隐藏
     public Image SpeedCooldownBar; // 加速技能冷却条（Image组件，用于填充动画）
     public GameObject SpeedReadyPrompt; // 提示玩家按P激活技能
     public Image SpeedSkillBar; // 加速技能条（Image组件，用于填充动画）
@@ -38,7 +39,8 @@ public class PlayerController : MonoBehaviour
         }
 
         SlipBar.SetActive(false);
-        SpeedSkillIcon.SetActive(false);
+        SpeedSkillIconContainer.SetActive(false); // 初始隐藏技能图标
+        SpeedSkillBarContainer.SetActive(false); // 初始隐藏技能条
         SpeedCooldownBar.fillAmount = 0; // 初始化冷却条为0
         SpeedReadyPrompt.SetActive(false);
         SpeedSkillBar.fillAmount = 0; // 初始化技能条为0
@@ -98,7 +100,6 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Dog"))
         {
             Debug.Log("Catch the dog!");
-            //FindObjectOfType<GameManager>().EndGame(true); // 主人胜利
             strikeSc.StartQuickStrike();
         }
     }
@@ -116,7 +117,7 @@ public class PlayerController : MonoBehaviour
     private void UnlockSpeedSkill()
     {
         isSpeedSkillUnlocked = true;
-        SpeedSkillIcon.SetActive(true); // 显示技能图标
+        SpeedSkillIconContainer.SetActive(true); // 显示技能图标
         StartCoroutine(SpeedCooldown());
     }
 
@@ -142,15 +143,19 @@ public class PlayerController : MonoBehaviour
     {
         isSpeedSkillReady = false;
         isSpeedActive = true;
+
         SpeedReadyPrompt.SetActive(false);
-        SpeedSkillBar.fillAmount = 0; // 技能条从0开始
+        SpeedSkillIconContainer.SetActive(false); // 隐藏技能图标
+        SpeedSkillBarContainer.SetActive(true); // 显示技能条
+
+        SpeedSkillBar.fillAmount = 1; // 技能条从0开始
         moveSpeed *= speedMultiplier; // 增加移动速度
 
         float elapsedTime = 0f;
         while (elapsedTime < speedDuration)
         {
             elapsedTime += Time.deltaTime;
-            float progress = elapsedTime / speedDuration;
+            float progress = 1 - elapsedTime / speedDuration;
             SpeedSkillBar.fillAmount = progress; // 填充技能条
             UpdateSkillIconPosition(progress); // 更新图标位置
             yield return null;
@@ -158,20 +163,18 @@ public class PlayerController : MonoBehaviour
 
         moveSpeed /= speedMultiplier; // 恢复原始速度
         isSpeedActive = false;
-        SpeedSkillBar.fillAmount = 0; // 技能条重置
+
+        SpeedSkillBar.fillAmount = 1; // 技能条重置
         UpdateSkillIconPosition(0); // 重置图标位置
-        StartCoroutine(SpeedCooldown()); // 重新进入冷却
+
+        SpeedSkillBarContainer.SetActive(false); // 隐藏技能条
+        SpeedSkillIconContainer.SetActive(true); // 恢复显示技能图标
+
+        StartCoroutine(SpeedCooldown()); // 开始冷却
     }
 
     private void UpdateSkillIconPosition(float progress)
     {
-        if (SkillIcon == null) return;
-
-        // 根据 progress 插值计算图标的新 X 坐标
-        float newX = Mathf.Lerp(SkillIconLeftPosition.x, SkillIconRightPosition.x, progress);
-
-        // 保持 Y 轴位置不变
-        SkillIcon.anchoredPosition = new Vector2(newX, SkillIcon.anchoredPosition.y);
+        SkillIcon.anchoredPosition = Vector2.Lerp(SkillIconLeftPosition, SkillIconRightPosition, progress);
     }
-
 }
