@@ -40,6 +40,41 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 395031058661699194, guid: b2f0b8902a31c8a46a1c4bb24ed9ea36,
         type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 395031058661699194, guid: b2f0b8902a31c8a46a1c4bb24ed9ea36,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0.89945614
+      objectReference: {fileID: 0}
+    - target: {fileID: 395031058661699194, guid: b2f0b8902a31c8a46a1c4bb24ed9ea36,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 0.27987415
+      objectReference: {fileID: 0}
+    - target: {fileID: 395031058661699194, guid: b2f0b8902a31c8a46a1c4bb24ed9ea36,
+        type: 3}
+      propertyPath: InitialModule.startColor.minColor.a
+      value: 0.8235294
+      objectReference: {fileID: 0}
+    - target: {fileID: 395031058661699194, guid: b2f0b8902a31c8a46a1c4bb24ed9ea36,
+        type: 3}
+      propertyPath: InitialModule.startColor.minColor.b
+      value: 0.8805031
+      objectReference: {fileID: 0}
+    - target: {fileID: 395031058661699194, guid: b2f0b8902a31c8a46a1c4bb24ed9ea36,
+        type: 3}
+      propertyPath: InitialModule.startColor.minColor.g
+      value: 0.56221527
+      objectReference: {fileID: 0}
+    - target: {fileID: 395031058661699194, guid: b2f0b8902a31c8a46a1c4bb24ed9ea36,
+        type: 3}
+      propertyPath: InitialModule.startColor.minColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 395031058661699194, guid: b2f0b8902a31c8a46a1c4bb24ed9ea36,
+        type: 3}
       propertyPath: InitialModule.startSpeed.minMaxState
       value: 3
       objectReference: {fileID: 0}
