@@ -38,11 +38,14 @@ public class PlayerController : MonoBehaviour
     public GameObject accelerateVfx;
     [HideInInspector]
     public GameObject soapVfx;
+    [HideInInspector]
+    public GameObject catchVfx;
 
     private void Awake()
     {
         accelerateVfx = (GameObject)Resources.Load("VFX/Accelerate");
         soapVfx = (GameObject)Resources.Load("VFX/StepOnSoapTwo");
+        catchVfx = (GameObject)Resources.Load("VFX/CatchMoment");
     }
 
     void Start()
@@ -123,6 +126,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Dog"))
         {
+            Instantiate(catchVfx, transform.position, Quaternion.identity);
             Debug.Log("Catch the dog!");
             strikeSc.StartQuickStrike();
         }
