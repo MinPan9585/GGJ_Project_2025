@@ -35,7 +35,7 @@ Material:
     m_Floats:
     - _UnityShadowMode: 2
     m_Colors:
-    - _BaseColor: {r: 0.49411762, g: 0.40392157, b: 0.35686272, a: 1}
+    - _BaseColor: {r: 0.42138356, g: 0.3299171, b: 0.25309515, a: 1}
     - _Color: {r: 0.49411768, g: 0.4039216, b: 0.35686275, a: 1}
     - _ColorDim: {r: 0.4339623, g: 0.36163524, b: 0.3254717, a: 1}
     - _UnityShadowColor: {r: 0.33011916, g: 0.2572535, b: 0.38679248, a: 1}

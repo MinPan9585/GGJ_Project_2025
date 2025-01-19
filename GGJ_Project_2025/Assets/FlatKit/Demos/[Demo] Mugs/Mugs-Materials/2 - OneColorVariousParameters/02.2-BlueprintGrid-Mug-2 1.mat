@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: 02.2-BlueprintGrid-Mug-2
+  m_Name: 02.2-BlueprintGrid-Mug-2 1
   m_Shader: {fileID: 4800000, guid: bee44b4a58655ee4cbff107302a3e131, type: 3}
   m_Parent: {fileID: 2100000, guid: c42e8b42a8bfa45fc8fd3620edb2b31d, type: 2}
   m_ModifiedSerializedProperties: 0
@@ -41,9 +41,9 @@ Material:
     - _ShadowEdgeSize: 0.001
     - _SpecularEnabled: 0
     m_Colors:
-    - _BaseColor: {r: 1, g: 0.6618828, b: 0.26886788, a: 1}
+    - _BaseColor: {r: 0.35837182, g: 0.754717, b: 0.64538044, a: 1}
     - _Color: {r: 1, g: 0.6618828, b: 0.2688679, a: 1}
-    - _ColorDim: {r: 0.8584906, g: 0.42607448, b: 0.26321647, a: 1}
+    - _ColorDim: {r: 0.1321629, g: 0.012044528, b: 0.5471698, a: 1}
     - _FlatRimColor: {r: 0.52358484, g: 0.6375387, b: 1, a: 1}
     - _FlatSpecularColor: {r: 0.52358484, g: 0.6375387, b: 1, a: 1}
   m_BuildTextureStacks: []
