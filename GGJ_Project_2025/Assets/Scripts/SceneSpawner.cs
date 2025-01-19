@@ -4,13 +4,13 @@ using System.Collections.Generic; // 引入以使用 List
 public class SceneSpawner : MonoBehaviour
 {
     public List<GameObject> bubblePrefabs; // 泡泡的Prefab列表
-    public GameObject bubbleParent, soapParent; // 泡泡和肥皂的父物体
+    public GameObject bubbleParent, soapParent, mopPrefab; // 泡泡、肥皂的父物体和拖把Prefab
     public GameObject soapPrefab; // 肥皂的Prefab
     public float minX = -8f; // 平面区域的最小X值
     public float maxX = 8f; // 平面区域的最大X值
     public float minZ = -5f; // 平面区域的最小Z值
     public float maxZ = 5f; // 平面区域的最大Z值
-    public float fixedY = 0f; // 泡泡和肥皂的固定Y值
+    public float fixedY = 0f; // 泡泡、肥皂和拖把的固定Y值
     public int rows = 5; // 网格的行数
     public int columns = 5; // 网格的列数
     public float bubblePositionOffset = 0.5f; // 泡泡在网格单元内的随机偏移范围
@@ -18,11 +18,15 @@ public class SceneSpawner : MonoBehaviour
     public float minBubbleScale = 1f; // 泡泡的最小缩放比例
     public float maxBubbleScale = 1.5f; // 泡泡的最大缩放比例
     public int soapCount = 5; // 肥皂的数量
+    public float mopBoundaryOffset = 1f; // 拖把距离边界的最小偏移量
 
     void Start()
     {
         // 生成泡泡和肥皂
         SpawnBubblesAndSoaps();
+
+        // 生成拖把
+        SpawnMop();
     }
 
     // 生成泡泡和肥皂
@@ -116,14 +120,28 @@ public class SceneSpawner : MonoBehaviour
 
                 // 实例化泡泡Prefab
                 GameObject bubble = Instantiate(randomBubblePrefab, bubblePosition, randomBubblePrefab.transform.rotation);
+                // 设置泡泡的父物体为当前Spawner，便于管理
+                bubble.transform.parent = bubbleParent.transform;
 
                 // 随机缩放泡泡
                 float randomScale = Random.Range(minBubbleScale, maxBubbleScale);
                 bubble.transform.localScale = new Vector3(randomScale, randomScale, randomScale);
-
-                // 设置泡泡的父物体为当前Spawner，便于管理
-                bubble.transform.parent = bubbleParent.transform;
             }
         }
+    }
+
+    // 生成拖把
+    public void SpawnMop()
+    {
+        // 随机生成拖把的位置，确保不会靠近边界
+        float mopX = Random.Range(minX + mopBoundaryOffset, maxX - mopBoundaryOffset);
+        float mopZ = Random.Range(minZ + mopBoundaryOffset, maxZ - mopBoundaryOffset);
+
+        Vector3 mopPosition = new Vector3(mopX, fixedY, mopZ);
+
+        // 实例化拖把Prefab
+        GameObject mop = Instantiate(mopPrefab, mopPosition, mopPrefab.transform.rotation);
+        // 父物体设置为当前Spawner（可选）
+        mop.transform.parent = transform;
     }
 }
