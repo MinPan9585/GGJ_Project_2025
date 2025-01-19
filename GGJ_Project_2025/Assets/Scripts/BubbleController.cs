@@ -10,6 +10,7 @@ public class BubbleController : MonoBehaviour
     public float respawnTimer = 3f; // 泡泡重新出现的计时器
     private bool isRespawning = false; // 是否正在计时重新出现
     private HashSet<Collider> insideEntities = new HashSet<Collider>(); // 记录进入泡泡区域的对象
+    public AudioSource Bubble;
 
     // 判断泡泡是否处于显示状态
     public bool IsVisible()
@@ -33,7 +34,16 @@ public class BubbleController : MonoBehaviour
             {
                 insideEntities.Add(other);
                 triggerCount++;
-                SetBubbleVisible(false); // 隐藏泡泡
+                if (isVisible) // 只有当泡泡是可见的时候，我们才隐藏它
+                {
+                    SetBubbleVisible(false); // 隐藏泡泡
+
+                    // 随机决定是否播放声音
+                    if (Random.Range(0f, 1f) > 0.5f) // 生成0到1之间的随机数，超过0.5则播放声音
+                    {
+                        Bubble.Play();
+                    }
+                }
             }
         }
         // 隐身狗进入已隐藏的泡泡
