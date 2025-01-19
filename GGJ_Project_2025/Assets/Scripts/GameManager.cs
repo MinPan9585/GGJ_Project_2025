@@ -7,8 +7,9 @@ public class GameManager : MonoBehaviour
 {
     public float gameDuration = 120f; // 游戏时长（秒）
     private float remainingTime; // 剩余时间
-    //public TextMeshProUGUI timerText; // 用于显示时间的 UI
+
     public Image progressBar; // 用于显示进度条的 Image（前景）
+    public GameObject rotatingImage; // 需要旋转的自定义 UIImage
     public GameObject winPanel; // 胜利面板
     public GameObject losePanel; // 失败面板
     public GameObject endGamePanel; // 结束游戏面板（包含狗胜利和人胜利的图片）
@@ -16,7 +17,13 @@ public class GameManager : MonoBehaviour
     public GameObject humanWinImage; // 人胜利图片
     public GameObject gameWindow; // 游戏窗口（需要在结束时关闭）
 
+    public Color colorStage1 = Color.green; // 第一阶段颜色
+    public Color colorStage2 = Color.yellow; // 第二阶段颜色
+    public Color colorStage3 = Color.red; // 第三阶段颜色
+
     private bool isGameOver = false;
+    public float initialRotationSpeed = 50f; // 初始旋转速度（可修改）
+    private float currentRotationSpeed; // 当前旋转速度
 
     void Start()
     {
@@ -32,7 +39,11 @@ public class GameManager : MonoBehaviour
         if (progressBar != null)
         {
             progressBar.fillAmount = 1f; // 初始填充为满
+            progressBar.color = colorStage1; // 初始颜色为第一阶段颜色
         }
+
+        // 初始化旋转速度
+        currentRotationSpeed = initialRotationSpeed;
     }
 
     void Update()
@@ -40,6 +51,7 @@ public class GameManager : MonoBehaviour
         if (!isGameOver)
         {
             UpdateTimer();
+            RotateImage(); // 更新 UIImage 的旋转
         }
 
         if (Input.GetKey(KeyCode.Space) && Input.GetKey(KeyCode.Delete))
@@ -60,7 +72,34 @@ public class GameManager : MonoBehaviour
         // 更新进度条填充
         if (progressBar != null)
         {
-            progressBar.fillAmount = remainingTime / gameDuration; // 根据剩余时间更新填充比例
+            float progress = remainingTime / gameDuration; // 根据剩余时间计算填充比例
+            progressBar.fillAmount = progress;
+
+            // 根据进度条阶段设置颜色和旋转速度
+            if (progress > 2f / 3f) // 第一阶段
+            {
+                progressBar.color = colorStage1;
+                currentRotationSpeed = initialRotationSpeed; // 恢复为初始速度
+            }
+            else if (progress > 1f / 3f) // 第二阶段
+            {
+                progressBar.color = colorStage2;
+                currentRotationSpeed = initialRotationSpeed * 2f; // 速度变为 2 倍
+            }
+            else // 第三阶段
+            {
+                progressBar.color = colorStage3;
+                currentRotationSpeed = initialRotationSpeed * 3f; // 速度变为 3 倍
+            }
+        }
+    }
+
+    void RotateImage()
+    {
+        if (rotatingImage != null)
+        {
+            // 让 UIImage 在 Z 轴方向上匀速旋转
+            rotatingImage.transform.Rotate(0f, 0f, currentRotationSpeed * Time.deltaTime);
         }
     }
 

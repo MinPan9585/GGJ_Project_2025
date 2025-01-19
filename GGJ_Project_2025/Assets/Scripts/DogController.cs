@@ -41,6 +41,8 @@ public class DogController : MonoBehaviour
 
     // 新增代码：Animator 组件
     public Animator animator; // Animator 组件
+    public Animator barAnimator; // 用于控制进度条相关动画的 Animator
+
 
     [HideInInspector]
     public GameObject dogBreathVfx;
@@ -189,6 +191,12 @@ public class DogController : MonoBehaviour
                     {
                         countdownFrame.sprite = frameStage2;
                     }
+
+                    // 在进度条进入第三阶段时设置 Shake 为 true
+                    if (barAnimator != null)
+                    {
+                        barAnimator.SetBool("Shake", true);
+                    }
                 }
             }
             else if (isVisible) // 狗现身时
@@ -202,6 +210,12 @@ public class DogController : MonoBehaviour
                 {
                     fillBarCoroutine = StartCoroutine(SmoothFillBar());
                 }
+
+                // 在进度条恢复时将 Shake 设置为 false
+                if (barAnimator != null)
+                {
+                    barAnimator.SetBool("Shake", false);
+                }
             }
             else if (isForcingReveal) // 如果狗正在强制现身，进度条保持空
             {
@@ -209,6 +223,7 @@ public class DogController : MonoBehaviour
             }
         }
     }
+
 
     private System.Collections.IEnumerator SmoothFillBar()
     {

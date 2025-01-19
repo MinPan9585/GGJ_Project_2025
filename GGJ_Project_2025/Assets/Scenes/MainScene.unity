@@ -408,6 +408,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &566205352 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1582696486716864044, guid: 2a509c2bd31c8c44abc37cb2e643111e,
+    type: 3}
+  m_PrefabInstance: {fileID: 366513438586767637}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &601401058
 GameObject:
   m_ObjectHideFlags: 0
@@ -1108,6 +1114,33 @@ Transform:
   - {fileID: 853970170}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1770463034 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1989228659962202964, guid: 2a509c2bd31c8c44abc37cb2e643111e,
+    type: 3}
+  m_PrefabInstance: {fileID: 366513438586767637}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1770463036
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1770463034}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 71b8030897e367441a819235fae0f002, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &1808285133
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1456,7 +1489,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1989228659962202964, guid: 2a509c2bd31c8c44abc37cb2e643111e,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1770463036}
   m_SourcePrefab: {fileID: 100100000, guid: 2a509c2bd31c8c44abc37cb2e643111e, type: 3}
 --- !u!114 &366513438586767638 stripped
 MonoBehaviour:
@@ -1619,11 +1656,6 @@ PrefabInstance:
       objectReference: {fileID: 1223685516}
     - target: {fileID: 3733861707514830997, guid: 8660cc4b5d4be514790e9ccca81f7a5a,
         type: 3}
-      propertyPath: timerText
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3733861707514830997, guid: 8660cc4b5d4be514790e9ccca81f7a5a,
-        type: 3}
       propertyPath: gameWindow
       value: 
       objectReference: {fileID: 1436949704}
@@ -1647,6 +1679,11 @@ PrefabInstance:
       propertyPath: humanWinImage
       value: 
       objectReference: {fileID: 285854641}
+    - target: {fileID: 3733861707514830997, guid: 8660cc4b5d4be514790e9ccca81f7a5a,
+        type: 3}
+      propertyPath: rotatingImage
+      value: 
+      objectReference: {fileID: 566205352}
     - target: {fileID: 4880757408229595172, guid: 8660cc4b5d4be514790e9ccca81f7a5a,
         type: 3}
       propertyPath: m_Name
@@ -1989,6 +2026,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6933207077188779717, guid: 6d85bf6b6e97cd7488bdecb3b3409e5f,
+        type: 3}
+      propertyPath: barAnimator
+      value: 
+      objectReference: {fileID: 1770463036}
     - target: {fileID: 6933207077188779717, guid: 6d85bf6b6e97cd7488bdecb3b3409e5f,
         type: 3}
       propertyPath: countdownBar
