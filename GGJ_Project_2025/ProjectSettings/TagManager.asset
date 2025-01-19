@@ -8,6 +8,7 @@ TagManager:
   - Dog
   - Soap
   - Mop
+  - Background
   layers:
   - Default
   - TransparentFX

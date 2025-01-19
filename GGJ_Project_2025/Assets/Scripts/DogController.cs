@@ -9,7 +9,8 @@ public class DogController : MonoBehaviour
     private MeshRenderer meshRenderer;
 
     public float hideTimer = 5f; // 隐藏计时器
-    public float forceRevealTimer = 1f; // 强制现身的计时器
+    public float forceRevealTimer = 1f; // 进度条清零导致的强制现身计时器
+    public float bubbleForceRevealTimer = 2f; // 踏入隐藏泡泡导致的强制现身计时器
     private float currentHideTimer; // 当前隐藏计时器
     public bool isVisible = true; // 狗是否可见
     private bool isMoving = false; // 狗是否在移动
@@ -36,6 +37,9 @@ public class DogController : MonoBehaviour
 
     public Transform spriteTransform; // 子对象的Transform，用于翻转动画
 
+    // 新增代码：Animator 组件
+    private Animator animator; // Animator 组件
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -56,6 +60,13 @@ public class DogController : MonoBehaviour
         if (spriteTransform == null)
         {
             spriteTransform = transform.GetChild(0); // 假设子对象是第一个子物体
+        }
+
+        // 新增代码：初始化 Animator
+        animator = GetComponent<Animator>();
+        if (animator == null)
+        {
+            Debug.LogWarning("Animator component not found on the GameObject!");
         }
     }
 
@@ -121,6 +132,12 @@ public class DogController : MonoBehaviour
             }
         }
 
+        // 新增代码：更新 Animator 参数
+        if (animator != null)
+        {
+            animator.SetBool("IsStaying", !isMoving); // 如果狗在移动，设置 IsStaying 为 false；否则为 true
+        }
+
         // 翻转动画
         if (moveX != 0) // 只有在水平移动时才翻转
         {
@@ -137,7 +154,7 @@ public class DogController : MonoBehaviour
             currentHideTimer -= Time.deltaTime;
             if (currentHideTimer <= 0)
             {
-                StartCoroutine(ForceReveal());
+                StartCoroutine(ForceReveal(forceRevealTimer));
             }
         }
     }
@@ -213,7 +230,7 @@ public class DogController : MonoBehaviour
         fillBarCoroutine = null; // 重置协程引用
     }
 
-    public System.Collections.IEnumerator ForceReveal()
+    public System.Collections.IEnumerator ForceReveal(float revealDuration)
     {
         if (isForcingReveal) yield break;
 
@@ -222,7 +239,7 @@ public class DogController : MonoBehaviour
 
         SetVisibility(true);
 
-        yield return new WaitForSeconds(forceRevealTimer);
+        yield return new WaitForSeconds(revealDuration);
 
         isForcingReveal = false;
 
@@ -249,11 +266,29 @@ public class DogController : MonoBehaviour
             dog2DObj.gameObject.SetActive(visible);
         }
 
+        if (visible && !wasVisible)
+        {
+            NotifyNearbyBubbles();
+        }
+
         if (visible && countdownBar != null && fillBarCoroutine == null)
         {
             fillBarCoroutine = StartCoroutine(SmoothFillBar());
         }
 
         Debug.Log($"Dog visibility set to: {visible}");
+    }
+
+    private void NotifyNearbyBubbles()
+    {
+        Collider[] nearbyColliders = Physics.OverlapSphere(transform.position, .35f);
+        foreach (Collider collider in nearbyColliders)
+        {
+            if (collider.TryGetComponent(out BubbleController bubble))
+            {
+                bubble.OnTriggerEnter(GetComponent<Collider>());
+                bubble.CheckEntityStatus();
+            }
+        }
     }
 }
