@@ -18,7 +18,13 @@ public class QuickStrikeManager : MonoBehaviour
 
     public bool isQuickStrikeActive = false; // 是否正在进行快速打击时间
     private GameManager gameManager; // 引用GameManager
-    public AudioSource Fightsound,Dogwin,Doglose;
+    public AudioSource Fightsound, Dogwin, Doglose;
+
+    public GameObject owner; // 主人GameObject
+    public GameObject dog; // 狗GameObject
+    public GameObject fightPrefab; // 生成的Prefab
+
+    private GameObject instantiatedPrefab; // 用于存储生成的Prefab实例
 
     void Start()
     {
@@ -50,6 +56,15 @@ public class QuickStrikeManager : MonoBehaviour
         // 初始化上一次按键记录
         ownerLastKey = KeyCode.None;
         dogLastKey = KeyCode.None;
+
+        // 隐藏主人和狗
+        owner.SetActive(false);
+        dog.SetActive(false);
+
+        // 在主人的位置生成Prefab
+        Vector3 spawnPosition = owner.transform.position;
+        spawnPosition.y = 0; // 强制将 y 坐标设置为 0
+        instantiatedPrefab = Instantiate(fightPrefab, spawnPosition, owner.transform.rotation);
     }
 
     private void HandleQuickStrikeInput()
@@ -130,16 +145,23 @@ public class QuickStrikeManager : MonoBehaviour
             if (!Dogwin.isPlaying)
                 Dogwin.Play();
             Debug.Log("狗成功逃脱！");
-            ResetPositions(); // 重置主人和狗的位置
-
         }
+
+        // 恢复主人和狗
+        ResetPositions();
     }
 
     private void ResetPositions()
     {
-        // 重置主人和狗的位置
-        GameObject owner = GameObject.FindGameObjectWithTag("Player");
-        GameObject dog = GameObject.FindGameObjectWithTag("Dog");
+        // 删除生成的Prefab
+        if (instantiatedPrefab != null)
+        {
+            Destroy(instantiatedPrefab);
+        }
+
+        // 显示主人和狗
+        owner.SetActive(true);
+        dog.SetActive(true);
 
         owner.transform.position = new Vector3(5, .5f, 0); // 主人初始位置
         dog.transform.position = new Vector3(-5, .5f, 0); // 狗初始位置

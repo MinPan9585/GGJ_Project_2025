@@ -159,18 +159,6 @@ public class DogController : MonoBehaviour
         }
     }
 
-    private void HandleHideTimer()
-    {
-        if (!isVisible && !isForcingReveal)
-        {
-            currentHideTimer -= Time.deltaTime;
-            if (currentHideTimer <= 0)
-            {
-                StartCoroutine(ForceReveal(forceRevealTimer));
-            }
-        }
-    }
-
     private void UpdateCountdownBar()
     {
         if (countdownBar != null)
@@ -242,7 +230,7 @@ public class DogController : MonoBehaviour
         fillBarCoroutine = null; // 重置协程引用
     }
 
-    public System.Collections.IEnumerator ForceReveal(float revealDuration)
+    public System.Collections.IEnumerator ForceReveal(float revealDuration, bool triggeredByProgressBar = false)
     {
         if (isForcingReveal) yield break;
 
@@ -251,17 +239,23 @@ public class DogController : MonoBehaviour
         Instantiate(dogBreathVfx, transform.position, Quaternion.identity);
         SetVisibility(true);
 
-        // 减速逻辑
-        isSpeedReduced = true;
-        moveSpeed = originalMoveSpeed / 2;
+        // 减速逻辑仅在进度条为零时触发
+        if (triggeredByProgressBar)
+        {
+            isSpeedReduced = true;
+            moveSpeed = originalMoveSpeed / 2;
+        }
 
         yield return new WaitForSeconds(revealDuration);
 
         isForcingReveal = false;
 
         // 恢复速度
-        isSpeedReduced = false;
-        moveSpeed = originalMoveSpeed;
+        if (triggeredByProgressBar)
+        {
+            isSpeedReduced = false;
+            moveSpeed = originalMoveSpeed;
+        }
 
         if (isMoving)
         {
@@ -275,6 +269,20 @@ public class DogController : MonoBehaviour
             SetVisibility(true);
         }
     }
+
+    private void HandleHideTimer()
+    {
+        if (!isVisible && !isForcingReveal)
+        {
+            currentHideTimer -= Time.deltaTime;
+            if (currentHideTimer <= 0)
+            {
+                // 当进度条清零时，触发 ForceReveal，并传递 triggeredByProgressBar 为 true
+                StartCoroutine(ForceReveal(forceRevealTimer, true));
+            }
+        }
+    }
+
 
     private void SetVisibility(bool visible)
     {
