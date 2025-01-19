@@ -5,6 +5,7 @@ using UnityEngine.Audio;
 public class DogController : MonoBehaviour
 {
     public float moveSpeed = 3f; // 狗的移动速度
+    private float originalMoveSpeed; // 保存原始的移动速度
     private Rigidbody rb;
     private MeshRenderer meshRenderer;
 
@@ -15,6 +16,7 @@ public class DogController : MonoBehaviour
     public bool isVisible = true; // 狗是否可见
     private bool isMoving = false; // 狗是否在移动
     private bool isForcingReveal = false; // 是否在强制现身状态
+    private bool isSpeedReduced = false; // 是否处于速度减半状态
 
     public float stopBufferTime = 0.2f; // 缓冲时间，当狗速度接近零时使用
     private float stopBufferTimer = 0f; // 当前缓冲计时器
@@ -71,6 +73,9 @@ public class DogController : MonoBehaviour
         {
             spriteTransform = transform.GetChild(0); // 假设子对象是第一个子物体
         }
+
+        // 保存原始移动速度
+        originalMoveSpeed = moveSpeed;
     }
 
     private void Update()
@@ -246,9 +251,17 @@ public class DogController : MonoBehaviour
         Instantiate(dogBreathVfx, transform.position, Quaternion.identity);
         SetVisibility(true);
 
+        // 减速逻辑
+        isSpeedReduced = true;
+        moveSpeed = originalMoveSpeed / 2;
+
         yield return new WaitForSeconds(revealDuration);
 
         isForcingReveal = false;
+
+        // 恢复速度
+        isSpeedReduced = false;
+        moveSpeed = originalMoveSpeed;
 
         if (isMoving)
         {

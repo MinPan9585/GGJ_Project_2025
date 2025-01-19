@@ -276,6 +276,9 @@ MonoBehaviour:
   spriteTransform: {fileID: 31625279468265253}
   slipsound: {fileID: 2874922777747492419}
   SpeedUp: {fileID: 8576218680250568684}
+  WarningObject: {fileID: 6864269376560530044}
+  dog: {fileID: 0}
+  animator: {fileID: 6302100812252719984}
 --- !u!82 &2874922777747492419
 AudioSource:
   m_ObjectHideFlags: 0
@@ -606,7 +609,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2163360128881612600
 Transform:
   m_ObjectHideFlags: 0

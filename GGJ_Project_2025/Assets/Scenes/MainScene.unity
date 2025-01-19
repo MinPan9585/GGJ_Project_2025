@@ -812,12 +812,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 366513438586767637}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &958125544 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3102816196896958537, guid: 6d85bf6b6e97cd7488bdecb3b3409e5f,
-    type: 3}
-  m_PrefabInstance: {fileID: 6119160337993243822}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &958125551 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5459465649509942447, guid: 6d85bf6b6e97cd7488bdecb3b3409e5f,
@@ -1245,12 +1239,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1964941777}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!95 &2062368332 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 6302100812252719984, guid: d821c214b0caa3e4fb19d496fb1f7368,
-    type: 3}
-  m_PrefabInstance: {fileID: 5318928107259917278}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &78149015816529138
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1718,19 +1706,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5977990670109556933, guid: d821c214b0caa3e4fb19d496fb1f7368,
         type: 3}
-      propertyPath: Dog
-      value: 
-      objectReference: {fileID: 958125544}
-    - target: {fileID: 5977990670109556933, guid: d821c214b0caa3e4fb19d496fb1f7368,
-        type: 3}
       propertyPath: dog
       value: 
       objectReference: {fileID: 958125551}
-    - target: {fileID: 5977990670109556933, guid: d821c214b0caa3e4fb19d496fb1f7368,
-        type: 3}
-      propertyPath: animator
-      value: 
-      objectReference: {fileID: 2062368332}
     - target: {fileID: 5977990670109556933, guid: d821c214b0caa3e4fb19d496fb1f7368,
         type: 3}
       propertyPath: SkillIcon
@@ -1741,11 +1719,6 @@ PrefabInstance:
       propertyPath: SpeedSkillBar
       value: 
       objectReference: {fileID: 1247583698}
-    - target: {fileID: 5977990670109556933, guid: d821c214b0caa3e4fb19d496fb1f7368,
-        type: 3}
-      propertyPath: WarningObject
-      value: 
-      objectReference: {fileID: 5318928107259917279}
     - target: {fileID: 5977990670109556933, guid: d821c214b0caa3e4fb19d496fb1f7368,
         type: 3}
       propertyPath: SpeedCooldownBar
@@ -1766,11 +1739,6 @@ PrefabInstance:
       propertyPath: SpeedSkillIconContainer
       value: 
       objectReference: {fileID: 888566194}
-    - target: {fileID: 6864269376560530044, guid: d821c214b0caa3e4fb19d496fb1f7368,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6915820917389982169, guid: d821c214b0caa3e4fb19d496fb1f7368,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1826,12 +1794,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d821c214b0caa3e4fb19d496fb1f7368, type: 3}
---- !u!1 &5318928107259917279 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6864269376560530044, guid: d821c214b0caa3e4fb19d496fb1f7368,
-    type: 3}
-  m_PrefabInstance: {fileID: 5318928107259917278}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5534963285998092046
 PrefabInstance:
   m_ObjectHideFlags: 0
