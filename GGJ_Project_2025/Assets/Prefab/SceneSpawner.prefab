@@ -48,9 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bubblePrefabs:
   - {fileID: 1451162498116035991, guid: cda6ae73989188547b8fa495b6f4b92c, type: 3}
-  - {fileID: 1451162498116035991, guid: c4a73f259bf504a4794d808b010327c5, type: 3}
   - {fileID: 1451162498116035991, guid: a28ffe6bac8a88348936ce67923edf6c, type: 3}
-  - {fileID: 1451162498116035991, guid: 468414b255dbd5d45bef28c05594263b, type: 3}
   bubbleParent: {fileID: 8905602861533999965}
   soapParent: {fileID: 7425723289028642075}
   mopPrefab: {fileID: 6340609341052681126, guid: 68ff909d4f95857498f75a7e6b92fb6b,
@@ -62,12 +60,12 @@ MonoBehaviour:
   minZ: -5
   maxZ: 5
   fixedY: 0
-  rows: 15
-  columns: 24
+  rows: 20
+  columns: 30
   bubblePositionOffset: 0.5
   soapPositionOffset: 0.25
-  minBubbleScale: 1.5
-  maxBubbleScale: 2.5
+  minBubbleScale: 0.8
+  maxBubbleScale: 1.8
   soapCount: 3
   mopBoundaryOffset: 1
 --- !u!1 &7425723289028642075

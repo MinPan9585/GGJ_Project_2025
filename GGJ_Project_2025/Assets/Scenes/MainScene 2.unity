@@ -1962,52 +1962,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1292853182887429551, guid: 31025551285a1324cbef7610da330b75,
-        type: 3}
-      propertyPath: rows
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 1292853182887429551, guid: 31025551285a1324cbef7610da330b75,
-        type: 3}
-      propertyPath: columns
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 1292853182887429551, guid: 31025551285a1324cbef7610da330b75,
-        type: 3}
-      propertyPath: maxBubbleScale
-      value: 1.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1292853182887429551, guid: 31025551285a1324cbef7610da330b75,
-        type: 3}
-      propertyPath: minBubbleScale
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1292853182887429551, guid: 31025551285a1324cbef7610da330b75,
-        type: 3}
-      propertyPath: bubblePositionOffset
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1292853182887429551, guid: 31025551285a1324cbef7610da330b75,
-        type: 3}
-      propertyPath: bubblePrefabs.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1292853182887429551, guid: 31025551285a1324cbef7610da330b75,
-        type: 3}
-      propertyPath: bubblePrefabs.Array.data[1]
-      value: 
-      objectReference: {fileID: 1451162498116035991, guid: a28ffe6bac8a88348936ce67923edf6c,
-        type: 3}
-    - target: {fileID: 1292853182887429551, guid: 31025551285a1324cbef7610da330b75,
-        type: 3}
-      propertyPath: bubblePrefabs.Array.data[2]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1292853182887429551, guid: 31025551285a1324cbef7610da330b75,
-        type: 3}
-      propertyPath: bubblePrefabs.Array.data[3]
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 2032798642941436382, guid: 31025551285a1324cbef7610da330b75,
         type: 3}
       propertyPath: m_Name
