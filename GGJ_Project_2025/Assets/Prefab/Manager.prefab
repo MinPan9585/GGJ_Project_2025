@@ -53,6 +53,10 @@ MonoBehaviour:
   progressBar: {fileID: 0}
   winPanel: {fileID: 0}
   losePanel: {fileID: 0}
+  endGamePanel: {fileID: 0}
+  dogWinImage: {fileID: 0}
+  humanWinImage: {fileID: 0}
+  gameWindow: {fileID: 0}
 --- !u!114 &6259099817177397956
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,6 +78,10 @@ MonoBehaviour:
   Fightsound: {fileID: 3199859295826044849}
   Dogwin: {fileID: 8334554320171076173}
   Doglose: {fileID: 217070219728130824}
+  owner: {fileID: 0}
+  dog: {fileID: 0}
+  fightPrefab: {fileID: 6185685092424730871, guid: 3e4aa374c6c492447b77d4672662d955,
+    type: 3}
 --- !u!82 &3199859295826044849
 AudioSource:
   m_ObjectHideFlags: 0

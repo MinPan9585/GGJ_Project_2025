@@ -525,12 +525,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 601401058}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &650046595 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8978443671305864581, guid: 2a509c2bd31c8c44abc37cb2e643111e,
-    type: 3}
-  m_PrefabInstance: {fileID: 366513438586767637}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &756552109
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1332,15 +1326,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4275004140300886239, guid: 2a509c2bd31c8c44abc37cb2e643111e,
+    - target: {fileID: 4644055533681201289, guid: 2a509c2bd31c8c44abc37cb2e643111e,
         type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 448
-      objectReference: {fileID: 0}
-    - target: {fileID: 4275004140300886239, guid: 2a509c2bd31c8c44abc37cb2e643111e,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 339
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6785023990698512943, guid: 2a509c2bd31c8c44abc37cb2e643111e,
         type: 3}
@@ -1464,6 +1453,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &366513438586767639 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3608739903449894171, guid: 2a509c2bd31c8c44abc37cb2e643111e,
+    type: 3}
+  m_PrefabInstance: {fileID: 366513438586767637}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &366513438586767640 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4893634289179327385, guid: 2a509c2bd31c8c44abc37cb2e643111e,
+    type: 3}
+  m_PrefabInstance: {fileID: 366513438586767637}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &366513438586767641 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4644055533681201289, guid: 2a509c2bd31c8c44abc37cb2e643111e,
+    type: 3}
+  m_PrefabInstance: {fileID: 366513438586767637}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &514646783236379269
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1604,7 +1611,7 @@ PrefabInstance:
         type: 3}
       propertyPath: losePanel
       value: 
-      objectReference: {fileID: 650046595}
+      objectReference: {fileID: 0}
     - target: {fileID: 3733861707514830997, guid: 8660cc4b5d4be514790e9ccca81f7a5a,
         type: 3}
       propertyPath: timerText
@@ -1612,9 +1619,29 @@ PrefabInstance:
       objectReference: {fileID: 79801728}
     - target: {fileID: 3733861707514830997, guid: 8660cc4b5d4be514790e9ccca81f7a5a,
         type: 3}
+      propertyPath: gameWindow
+      value: 
+      objectReference: {fileID: 366513438586767639}
+    - target: {fileID: 3733861707514830997, guid: 8660cc4b5d4be514790e9ccca81f7a5a,
+        type: 3}
+      propertyPath: dogWinImage
+      value: 
+      objectReference: {fileID: 366513438586767640}
+    - target: {fileID: 3733861707514830997, guid: 8660cc4b5d4be514790e9ccca81f7a5a,
+        type: 3}
       propertyPath: progressBar
       value: 
       objectReference: {fileID: 1948014546}
+    - target: {fileID: 3733861707514830997, guid: 8660cc4b5d4be514790e9ccca81f7a5a,
+        type: 3}
+      propertyPath: endGamePanel
+      value: 
+      objectReference: {fileID: 366513438586767641}
+    - target: {fileID: 3733861707514830997, guid: 8660cc4b5d4be514790e9ccca81f7a5a,
+        type: 3}
+      propertyPath: humanWinImage
+      value: 
+      objectReference: {fileID: 285854641}
     - target: {fileID: 4880757408229595172, guid: 8660cc4b5d4be514790e9ccca81f7a5a,
         type: 3}
       propertyPath: m_Name
