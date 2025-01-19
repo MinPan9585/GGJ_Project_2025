@@ -12,42 +12,36 @@ public class BubbleController : MonoBehaviour
     private HashSet<Collider> insideEntities = new HashSet<Collider>(); // 记录进入泡泡区域的对象
     public AudioSource Bubble;
 
-    // 判断泡泡是否处于显示状态
     public bool IsVisible()
     {
         return isVisible;
     }
 
-    // 设置泡泡的显示状态
     public void SetBubbleVisible(bool visible)
     {
-        isVisible = visible; // 同步更新显示状态
+        isVisible = visible;
         bubbleChild.SetActive(visible);
     }
 
     public void OnTriggerEnter(Collider other)
     {
-        // 玩家或现身状态的狗进入泡泡区域
         if (other.CompareTag("Player") || (other.CompareTag("Dog") && other.TryGetComponent(out DogController dogController) && dogController.isVisible))
         {
             if (!insideEntities.Contains(other))
             {
                 insideEntities.Add(other);
                 triggerCount++;
-                SetBubbleVisible(false); // 隐藏泡泡
+                SetBubbleVisible(false);
 
-                    // 随机决定是否播放声音
-                if (Random.Range(0f, 1f) > 0.8f) // 生成0到1之间的随机数，超过0.5则播放声音
+                if (Random.Range(0f, 1f) > 0.8f)
                 {
-                    Debug.Log("111111111111111");
                     Bubble.Play();
-                }   
+                }
             }
         }
-        // 隐身狗进入已隐藏的泡泡
         else if (other.CompareTag("Dog") && other.TryGetComponent(out DogController hiddenDogController) && !hiddenDogController.isVisible && !isVisible)
         {
-            StartCoroutine(hiddenDogController.ForceReveal()); // 强制现身狗
+            StartCoroutine(hiddenDogController.ForceReveal(hiddenDogController.bubbleForceRevealTimer));
         }
     }
 
@@ -66,23 +60,18 @@ public class BubbleController : MonoBehaviour
 
     public void CheckEntityStatus()
     {
-        //Debug.Log("--------------------------------" + insideEntities.Count);
-        // 检查触发区域内的所有实体
         foreach (Collider entity in insideEntities)
         {
-            // 如果是现身状态的狗，隐藏泡泡
             if (entity.CompareTag("Dog"))
             {
                 DogController dgCon = entity.GetComponent<DogController>();
                 if (dgCon != null && dgCon.isVisible)
                 {
-                    //Debug.Log("set bubble to disappear");
                     SetBubbleVisible(false);
                     return;
                 }
             }
 
-            // 如果是玩家，隐藏泡泡
             if (entity.CompareTag("Player"))
             {
                 SetBubbleVisible(false);
@@ -90,7 +79,6 @@ public class BubbleController : MonoBehaviour
             }
         }
 
-        // 如果没有玩家或现身的狗，泡泡可以重新显示（如果计时器允许）
         if (triggerCount <= 0 && !isRespawning)
         {
             StartCoroutine(RespawnBubble());
@@ -106,25 +94,14 @@ public class BubbleController : MonoBehaviour
         {
             if (triggerCount > 0)
             {
-                isRespawning = false; // 如果有生物进入，停止计时
+                isRespawning = false;
                 yield break;
             }
             timer -= Time.deltaTime;
             yield return null;
         }
 
-        SetBubbleVisible(true); // 重新显示泡泡
+        SetBubbleVisible(true);
         isRespawning = false;
     }
 }
-
-
-
-
-
-
-
-
-
-
-

@@ -9,7 +9,8 @@ public class DogController : MonoBehaviour
     private MeshRenderer meshRenderer;
 
     public float hideTimer = 5f; // 隐藏计时器
-    public float forceRevealTimer = 1f; // 强制现身的计时器
+    public float forceRevealTimer = 1f; // 进度条清零导致的强制现身计时器
+    public float bubbleForceRevealTimer = 2f; // 踏入隐藏泡泡导致的强制现身计时器
     private float currentHideTimer; // 当前隐藏计时器
     public bool isVisible = true; // 狗是否可见
     private bool isMoving = false; // 狗是否在移动
@@ -36,6 +37,19 @@ public class DogController : MonoBehaviour
 
     public Transform spriteTransform; // 子对象的Transform，用于翻转动画
 
+    // 新增代码：Animator 组件
+    public Animator animator; // Animator 组件
+
+    [HideInInspector]
+    public GameObject dogBreathVfx;
+    [HideInInspector]
+    public GameObject dogDisappearVfx;
+
+    private void Awake()
+    {
+        dogBreathVfx = (GameObject)Resources.Load("VFX/DogBreath");
+        dogDisappearVfx = (GameObject)Resources.Load("VFX/DogDisappear");
+    }
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -90,6 +104,7 @@ public class DogController : MonoBehaviour
                 // 如果狗开始移动，隐藏狗并重置计时器
                 if (!isForcingReveal)
                 {
+                    Instantiate(dogDisappearVfx, transform.position, Quaternion.identity);
                     SetVisibility(false);
                     currentHideTimer = hideTimer; // 重置隐藏计时器
                 }
@@ -109,6 +124,8 @@ public class DogController : MonoBehaviour
                     // 如果狗停止移动且不在强制现身状态，则主动现身
                     if (!isForcingReveal)
                     {
+                        Instantiate(dogBreathVfx, transform.position, Quaternion.identity);
+
                         // 插入狗甩干的声音
                         if (DogAppear != null)
                         {
@@ -119,6 +136,13 @@ public class DogController : MonoBehaviour
                     }
                 }
             }
+        }
+
+        // 新增代码：更新 Animator 参数
+        if (animator != null)
+        {
+            Debug.Log("set animator IsStaying to  ----  " + !isMoving);
+            animator.SetBool("IsStaying", !isMoving); // 如果狗在移动，设置 IsStaying 为 false；否则为 true
         }
 
         // 翻转动画
@@ -137,7 +161,7 @@ public class DogController : MonoBehaviour
             currentHideTimer -= Time.deltaTime;
             if (currentHideTimer <= 0)
             {
-                StartCoroutine(ForceReveal());
+                StartCoroutine(ForceReveal(forceRevealTimer));
             }
         }
     }
@@ -213,26 +237,28 @@ public class DogController : MonoBehaviour
         fillBarCoroutine = null; // 重置协程引用
     }
 
-    public System.Collections.IEnumerator ForceReveal()
+    public System.Collections.IEnumerator ForceReveal(float revealDuration)
     {
         if (isForcingReveal) yield break;
 
         isForcingReveal = true;
         Debug.Log("Dog is forced to reveal!");
-
+        Instantiate(dogBreathVfx, transform.position, Quaternion.identity);
         SetVisibility(true);
 
-        yield return new WaitForSeconds(forceRevealTimer);
+        yield return new WaitForSeconds(revealDuration);
 
         isForcingReveal = false;
 
         if (isMoving)
         {
+            Instantiate(dogDisappearVfx, transform.position, Quaternion.identity);
             SetVisibility(false);
             currentHideTimer = hideTimer;
         }
         else
         {
+            Instantiate(dogBreathVfx, transform.position, Quaternion.identity);
             SetVisibility(true);
         }
     }
@@ -249,11 +275,29 @@ public class DogController : MonoBehaviour
             dog2DObj.gameObject.SetActive(visible);
         }
 
+        if (visible && !wasVisible)
+        {
+            NotifyNearbyBubbles();
+        }
+
         if (visible && countdownBar != null && fillBarCoroutine == null)
         {
             fillBarCoroutine = StartCoroutine(SmoothFillBar());
         }
 
         Debug.Log($"Dog visibility set to: {visible}");
+    }
+
+    private void NotifyNearbyBubbles()
+    {
+        Collider[] nearbyColliders = Physics.OverlapSphere(transform.position, .35f);
+        foreach (Collider collider in nearbyColliders)
+        {
+            if (collider.TryGetComponent(out BubbleController bubble))
+            {
+                bubble.OnTriggerEnter(GetComponent<Collider>());
+                bubble.CheckEntityStatus();
+            }
+        }
     }
 }

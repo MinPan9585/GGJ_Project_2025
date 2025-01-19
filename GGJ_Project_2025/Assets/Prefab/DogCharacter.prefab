@@ -88,6 +88,7 @@ MonoBehaviour:
   moveSpeed: 6
   hideTimer: 3.5
   forceRevealTimer: 1.5
+  bubbleForceRevealTimer: 0.85
   isVisible: 1
   stopBufferTime: 0.1
   countdownBar: {fileID: 0}
@@ -102,6 +103,9 @@ MonoBehaviour:
   DogAppear: {fileID: 849278588193649816}
   DogBreath: {fileID: 5025101485924068613}
   spriteTransform: {fileID: 343726459919363716}
+  animator: {fileID: 2101988093748223847}
+  dogBreathVfx: {fileID: 0}
+  dogDisappearVfx: {fileID: 0}
 --- !u!82 &849278588193649816
 AudioSource:
   m_ObjectHideFlags: 0
@@ -342,9 +346,9 @@ Transform:
   m_GameObject: {fileID: 6958140491611227482}
   serializedVersion: 2
   m_LocalRotation: {x: 0.17364816, y: 0, z: 0, w: 0.9848078}
-  m_LocalPosition: {x: 0, y: 0.104, z: 0}
-  m_LocalScale: {x: -0.12, y: 0.12, z: 0.12}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 0, y: 0.52, z: 0}
+  m_LocalScale: {x: -0.18, y: 0.18, z: 0.18}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 5459465649509942447}
   m_LocalEulerAnglesHint: {x: 20, y: 0, z: 0}
