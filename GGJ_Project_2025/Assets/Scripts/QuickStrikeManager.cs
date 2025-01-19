@@ -18,6 +18,7 @@ public class QuickStrikeManager : MonoBehaviour
 
     public bool isQuickStrikeActive = false; // 是否正在进行快速打击时间
     private GameManager gameManager; // 引用GameManager
+    public AudioSource Fightsound,Dogwin,Doglose;
 
     void Start()
     {
@@ -37,6 +38,8 @@ public class QuickStrikeManager : MonoBehaviour
     {
         isQuickStrikeActive = true;
         quickStrikePanel.SetActive(true);
+        if (!Fightsound.isPlaying)
+            Fightsound.Play();
 
         // 初始化进度条和按键次数
         ownerProgressBar.fillAmount = 0f;
@@ -113,15 +116,22 @@ public class QuickStrikeManager : MonoBehaviour
         isQuickStrikeActive = false;
         quickStrikePanel.SetActive(false);
 
+        Fightsound.Stop();
+
         if (ownerWins)
         {
             Debug.Log("主人抓住了狗！");
             gameManager.EndGame(true); // 主人胜利，结束游戏
+            if (!Doglose.isPlaying)
+                Doglose.Play();
         }
         else
         {
+            if (!Dogwin.isPlaying)
+                Dogwin.Play();
             Debug.Log("狗成功逃脱！");
             ResetPositions(); // 重置主人和狗的位置
+
         }
     }
 

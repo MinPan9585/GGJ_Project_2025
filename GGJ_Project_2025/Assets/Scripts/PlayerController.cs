@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
     private bool isSpeedActive = false; // 是否正在使用加速技能
     private QuickStrikeManager strikeSc;
     public Transform spriteTransform; // 子对象的Transform，用于翻转动画
+    public AudioSource slipsound,SpeedUp;
 
     void Start()
     {
@@ -106,6 +107,8 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator Slip()
     {
+        if (!slipsound.isPlaying)
+            slipsound.Play();
         canMove = false; // 禁用移动
         SlipBar.SetActive(true);
         rb.velocity = Vector3.zero; // 停止移动
@@ -150,6 +153,8 @@ public class PlayerController : MonoBehaviour
 
         SpeedSkillBar.fillAmount = 1; // 技能条从0开始
         moveSpeed *= speedMultiplier; // 增加移动速度
+        if (!SpeedUp.isPlaying)
+            SpeedUp.Play();
 
         float elapsedTime = 0f;
         while (elapsedTime < speedDuration)

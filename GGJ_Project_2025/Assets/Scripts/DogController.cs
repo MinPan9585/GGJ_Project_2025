@@ -156,6 +156,11 @@ public class DogController : MonoBehaviour
 
         isForcingReveal = true; // 标记为强制现身状态
         Debug.Log("Dog is forced to reveal!"); // 调试输出
+                                               // 播放喘气声音
+        DogBreath.Play();
+
+        // 等待喘气声音播放结束
+        yield return new WaitForSeconds(DogBreath.clip.length);
 
         SetVisibility(true); // 强制现身
 

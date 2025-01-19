@@ -34,16 +34,14 @@ public class BubbleController : MonoBehaviour
             {
                 insideEntities.Add(other);
                 triggerCount++;
-                if (isVisible) // 只有当泡泡是可见的时候，我们才隐藏它
-                {
-                    SetBubbleVisible(false); // 隐藏泡泡
+                SetBubbleVisible(false); // 隐藏泡泡
 
                     // 随机决定是否播放声音
-                    if (Random.Range(0f, 1f) > 0.5f) // 生成0到1之间的随机数，超过0.5则播放声音
-                    {
-                        Bubble.Play();
-                    }
-                }
+                if (Random.Range(0f, 1f) > 0.8f) // 生成0到1之间的随机数，超过0.5则播放声音
+                {
+                    Debug.Log("111111111111111");
+                    Bubble.Play();
+                }   
             }
         }
         // 隐身狗进入已隐藏的泡泡
