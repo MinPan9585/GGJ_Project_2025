@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
 {
     public float gameDuration = 120f; // 游戏时长（秒）
     private float remainingTime; // 剩余时间
-    public TextMeshProUGUI timerText; // 用于显示时间的 UI
+    //public TextMeshProUGUI timerText; // 用于显示时间的 UI
     public Image progressBar; // 用于显示进度条的 Image（前景）
     public GameObject winPanel; // 胜利面板
     public GameObject losePanel; // 失败面板
@@ -20,10 +20,13 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        Time.timeScale = 1f;
+
         remainingTime = gameDuration;
         winPanel.SetActive(false);
         losePanel.SetActive(false);
         endGamePanel.SetActive(false); // 初始化时隐藏结束面板
+        gameWindow.SetActive(true);
 
         // 初始化进度条
         if (progressBar != null)
@@ -52,12 +55,6 @@ public class GameManager : MonoBehaviour
         {
             remainingTime = 0;
             EndGame(false); // 时间结束，失败
-        }
-
-        // 更新 UI
-        if (timerText != null)
-        {
-            timerText.text = ((int)remainingTime).ToString();
         }
 
         // 更新进度条填充

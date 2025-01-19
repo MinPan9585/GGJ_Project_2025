@@ -18,7 +18,12 @@ public class SceneSpawner : MonoBehaviour
     public float minBubbleScale = 1f; // 泡泡的最小缩放比例
     public float maxBubbleScale = 1.5f; // 泡泡的最大缩放比例
     public int soapCount = 5; // 肥皂的数量
-    public float mopBoundaryOffset = 1f; // 拖把距离边界的最小偏移量
+
+    // 拖把生成范围
+    public float mopMinX = -6f; // 拖把生成区域的最小X值
+    public float mopMaxX = 6f; // 拖把生成区域的最大X值
+    public float mopMinZ = -3f; // 拖把生成区域的最小Z值
+    public float mopMaxZ = 3f; // 拖把生成区域的最大Z值
 
     void Start()
     {
@@ -133,15 +138,16 @@ public class SceneSpawner : MonoBehaviour
     // 生成拖把
     public void SpawnMop()
     {
-        // 随机生成拖把的位置，确保不会靠近边界
-        float mopX = Random.Range(minX + mopBoundaryOffset, maxX - mopBoundaryOffset);
-        float mopZ = Random.Range(minZ + mopBoundaryOffset, maxZ - mopBoundaryOffset);
+        // 随机生成拖把的位置，使用单独的范围
+        float mopX = Random.Range(mopMinX, mopMaxX);
+        float mopZ = Random.Range(mopMinZ, mopMaxZ);
 
+        // 确保拖把的Y值固定
         Vector3 mopPosition = new Vector3(mopX, fixedY, mopZ);
 
         // 实例化拖把Prefab
         GameObject mop = Instantiate(mopPrefab, mopPosition, mopPrefab.transform.rotation);
-        // 父物体设置为当前Spawner（可选）
-        mop.transform.parent = transform;
+        // 设置拖把的父物体为当前Spawner，便于管理
+        mop.transform.parent = this.transform;
     }
 }

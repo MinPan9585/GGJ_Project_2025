@@ -8,6 +8,7 @@ public class MainMenuBtns : MonoBehaviour
     public GameObject tut;
     public void StartGameLevel()
     {
+        Time.timeScale = 1f;
         SceneManager.LoadScene(1);
     }
 
@@ -19,5 +20,10 @@ public class MainMenuBtns : MonoBehaviour
     public void ExitTut()
     {
         tut.SetActive(false);
+    }
+
+    public void backToMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 }

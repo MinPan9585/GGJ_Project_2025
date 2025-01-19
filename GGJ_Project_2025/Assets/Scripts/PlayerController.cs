@@ -20,8 +20,8 @@ public class PlayerController : MonoBehaviour
     public float cooldownTime = 5f; // 冷却时间
 
     private Rigidbody rb; // 主人的刚体
-    private bool canMove = true; // 是否可以移动（用于滑倒时禁用移动）
-    private bool isSpeedSkillUnlocked = false; // 是否解锁了加速技能
+    public bool canMove = true; // 是否可以移动（用于滑倒时禁用移动）
+    public bool isSpeedSkillUnlocked = false; // 是否解锁了加速技能
     private bool isSpeedSkillReady = false; // 是否可以激活加速技能
     private bool isSpeedActive = false; // 是否正在使用加速技能
     private QuickStrikeManager strikeSc;
@@ -90,6 +90,13 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
+        // 仅当 canMove 为 true 时允许移动
+        if (!canMove)
+        {
+            rb.velocity = Vector3.zero; // 确保角色停止移动
+            return;
+        }
+
         // 获取WASD输入
         float moveX = Input.GetAxis("HorizontalArrow"); // left right up down
         float moveZ = Input.GetAxis("VerticalArrow");
@@ -105,7 +112,14 @@ public class PlayerController : MonoBehaviour
             localScale.x = moveX > 0 ? Mathf.Abs(localScale.x) : -Mathf.Abs(localScale.x);
             spriteTransform.localScale = localScale;
         }
+
+        // 更新动画状态
+        if (animator != null)
+        {
+            animator.SetBool("IsWalking", moveDirection.magnitude > 0);
+        }
     }
+
 
     private void OnTriggerEnter(Collider collider)
     {
@@ -128,9 +142,31 @@ public class PlayerController : MonoBehaviour
         {
             Instantiate(catchVfx, transform.position, Quaternion.identity);
             Debug.Log("Catch the dog!");
+
+            // 如果加速技能正在激活，提前停止
+            if (isSpeedActive)
+            {
+                StopCoroutine("ActivateSpeedSkill"); // 停止加速协程
+                moveSpeed /= speedMultiplier; // 恢复原始速度
+                isSpeedActive = false;
+                SpeedSkillBarContainer.SetActive(false);
+                SpeedSkillIconContainer.SetActive(true);
+
+                // 恢复Animator的SpeedUp为false
+                if (animator != null)
+                {
+                    animator.SetBool("SpeedUp", false);
+                }
+            }
+
+            // 确保冷却协程重新启动
+            RestartSpeedCooldown();
+
+            // 开始QuickStrike逻辑
             strikeSc.StartQuickStrike();
         }
     }
+
 
     private IEnumerator Slip()
     {
@@ -138,29 +174,48 @@ public class PlayerController : MonoBehaviour
         if (!slipsound.isPlaying)
             slipsound.Play();
 
+        // 如果正在加速，停止加速逻辑并开始冷却
+        if (isSpeedActive)
+        {
+            StopCoroutine("ActivateSpeedSkill"); // 停止加速协程
+            moveSpeed /= speedMultiplier; // 恢复原始速度
+            isSpeedActive = false;
+            SpeedSkillBarContainer.SetActive(false); // 隐藏技能条
+            SpeedSkillIconContainer.SetActive(true); // 显示技能图标
+
+            // 恢复Animator的SpeedUp为false
+            if (animator != null)
+            {
+                animator.SetBool("SpeedUp", false);
+            }
+        }
+
         // 触发Animator中的Slip Trigger
         if (animator != null)
         {
             animator.SetTrigger("Slip");
         }
 
-        // 在摔倒时，将玩家的 scale.x 设置为行走时的相反方向
-        Vector3 localScale = spriteTransform.localScale;
-        localScale.x = -localScale.x; // 反转 x 轴
-        spriteTransform.localScale = localScale;
-
-        canMove = false; // 禁用移动
+        // 禁用移动
+        canMove = false;
         SlipBar.SetActive(true);
         rb.velocity = Vector3.zero; // 停止移动
-        yield return new WaitForSeconds(slipTime); // 滑倒持续1秒
+        yield return new WaitForSeconds(slipTime); // 滑倒持续指定时间
 
-        // 恢复移动时，恢复原始的 scale.x
-        localScale.x = -localScale.x; // 再次反转 x 轴，回到原始方向
-        spriteTransform.localScale = localScale;
-
-        canMove = true; // 恢复移动
+        // 恢复移动权限
+        // 重置加速冷却
+        RestartSpeedCooldown();
+        canMove = true;
         SlipBar.SetActive(false);
+
+        // 恢复Animator到行走状态
+        if (animator != null)
+        {
+            animator.ResetTrigger("Slip"); // 重置“滑倒”触发器
+            animator.SetBool("IsWalking", true); // 设置为行走状态
+        }
     }
+
 
 
     private void UnlockSpeedSkill()
@@ -172,6 +227,7 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator SpeedCooldown()
     {
+        Debug.Log("Speed Cool down start");
         SpeedCooldownBar.fillAmount = 0; // 冷却条从0开始
         isSpeedSkillReady = false;
 
@@ -188,8 +244,12 @@ public class PlayerController : MonoBehaviour
         isSpeedSkillReady = true;
     }
 
+
     private IEnumerator ActivateSpeedSkill()
     {
+        // 如果冷却协程正在运行，停止它
+        StopCoroutine("SpeedCooldown");
+
         isSpeedSkillReady = false;
         isSpeedActive = true;
 
@@ -232,6 +292,16 @@ public class PlayerController : MonoBehaviour
         }
 
         StartCoroutine(SpeedCooldown()); // 开始冷却
+    }
+
+    public void RestartSpeedCooldown()
+    {
+        // 如果加速技能已经解锁但未准备好，则重新启动冷却
+        if (isSpeedSkillUnlocked)
+        {
+            StopAllCoroutines(); // 停止所有协程，避免重复
+            StartCoroutine(SpeedCooldown());
+        }
     }
 
 

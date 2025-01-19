@@ -146,7 +146,7 @@ public class DogController : MonoBehaviour
         // 新增代码：更新 Animator 参数
         if (animator != null)
         {
-            Debug.Log("set animator IsStaying to  ----  " + !isMoving);
+            // Debug.Log("set animator IsStaying to  ----  " + !isMoving);
             animator.SetBool("IsStaying", !isMoving); // 如果狗在移动，设置 IsStaying 为 false；否则为 true
         }
 

@@ -18,7 +18,7 @@ public class QuickStrikeManager : MonoBehaviour
 
     public bool isQuickStrikeActive = false; // 是否正在进行快速打击时间
     private GameManager gameManager; // 引用GameManager
-    public AudioSource Fightsound, Dogwin, Doglose;
+    public AudioSource Fightsound;
 
     public GameObject owner; // 主人GameObject
     public GameObject dog; // 狗GameObject
@@ -137,19 +137,15 @@ public class QuickStrikeManager : MonoBehaviour
         {
             Debug.Log("主人抓住了狗！");
             gameManager.EndGame(true); // 主人胜利，结束游戏
-            if (!Doglose.isPlaying)
-                Doglose.Play();
         }
         else
         {
-            if (!Dogwin.isPlaying)
-                Dogwin.Play();
-            Debug.Log("狗成功逃脱！");
+            Debug.Log("狗逃跑了！");
+            ResetPositions();
+            //游戏继续
         }
-
-        // 恢复主人和狗
-        ResetPositions();
     }
+
 
     private void ResetPositions()
     {
@@ -163,9 +159,31 @@ public class QuickStrikeManager : MonoBehaviour
         owner.SetActive(true);
         dog.SetActive(true);
 
+        PlayerController playerController = FindObjectOfType<PlayerController>();
+        if (playerController != null)
+        {
+            Debug.Log("Strike done");
+            playerController.RestartSpeedCooldown();
+        }
+
+        // 重置主人和狗的位置
         owner.transform.position = new Vector3(5, .5f, 0); // 主人初始位置
         dog.transform.position = new Vector3(-5, .5f, 0); // 狗初始位置
+
+        // 在主人和狗上寻找名为 "BackInPosition" 的子物体并激活
+        Transform ownerBackInPosition = owner.transform.Find("BackInPosition");
+        if (ownerBackInPosition != null)
+        {
+            ownerBackInPosition.gameObject.SetActive(true);
+        }
+
+        Transform dogBackInPosition = dog.transform.Find("BackInPosition");
+        if (dogBackInPosition != null)
+        {
+            dogBackInPosition.gameObject.SetActive(true);
+        }
     }
+
 }
 
 
