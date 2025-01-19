@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.UI; // 引入 UI 命名空间
+using UnityEngine.Audio;
 
 public class DogController : MonoBehaviour
 {
@@ -16,6 +18,13 @@ public class DogController : MonoBehaviour
     public float stopBufferTime = 0.2f; // 缓冲时间，当狗速度接近零时使用
     private float stopBufferTimer = 0f; // 当前缓冲计时器
 
+    // 引用 UI Image 组件
+    public Image countdownBar;
+
+    private Coroutine fillBarCoroutine; // 用于平滑回满的协程
+    private QuickStrikeManager strikeSc;
+    public AudioSource DogAppear, DogBreath;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -24,19 +33,30 @@ public class DogController : MonoBehaviour
         // 初始化状态
         SetVisibility(true);
         currentHideTimer = hideTimer; // 初始化隐藏计时器
+        strikeSc = FindObjectOfType<QuickStrikeManager>();
+
+        // 确保进度条初始为满
+        if (countdownBar != null)
+        {
+            countdownBar.fillAmount = 1f;
+        }
     }
 
     private void Update()
     {
-        HandleMovement();
-        HandleHideTimer();
+        if (!strikeSc.isQuickStrikeActive)
+        {
+            HandleMovement();
+            HandleHideTimer();
+            UpdateCountdownBar();
+        }
     }
 
     private void HandleMovement()
     {
         // 获取输入
-        float moveX = Input.GetAxis("HorizontalArrow");
-        float moveZ = Input.GetAxis("VerticalArrow");
+        float moveX = Input.GetAxis("Horizontal"); //wasd
+        float moveZ = Input.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(moveX, 0, moveZ).normalized;
         rb.velocity = movement * moveSpeed;
@@ -92,6 +112,44 @@ public class DogController : MonoBehaviour
         }
     }
 
+    private void UpdateCountdownBar()
+    {
+        // 更新进度条的填充比例
+        if (countdownBar != null)
+        {
+            if (!isVisible && !isForcingReveal) // 狗不可见且不在强制现身状态
+            {
+                countdownBar.fillAmount = currentHideTimer / hideTimer;
+            }
+            else
+            {
+                // 如果需要回满，启动平滑过渡协程
+                if (fillBarCoroutine == null)
+                {
+                    fillBarCoroutine = StartCoroutine(SmoothFillBar());
+                }
+            }
+        }
+    }
+
+    private System.Collections.IEnumerator SmoothFillBar()
+    {
+        float duration = 0.5f; // 平滑填充的时间
+        float startFill = countdownBar.fillAmount; // 当前填充值
+        float targetFill = 1f; // 目标填充值
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            countdownBar.fillAmount = Mathf.Lerp(startFill, targetFill, elapsedTime / duration);
+            yield return null;
+        }
+
+        countdownBar.fillAmount = targetFill; // 确保最终填充为满
+        fillBarCoroutine = null; // 重置协程引用
+    }
+
     public System.Collections.IEnumerator ForceReveal()
     {
         if (isForcingReveal) yield break; // 防止重复调用
@@ -125,6 +183,18 @@ public class DogController : MonoBehaviour
 
         bool wasVisible = isVisible; // 记录之前的状态
         isVisible = visible;
+        //插入狗甩干的声音
+        if (visible)
+        {
+            if (!DogAppear.isPlaying)
+                DogAppear.Play();
+        }
+        else
+        {
+            if (DogAppear.isPlaying)
+                DogAppear.Stop();
+        }
+
         meshRenderer.enabled = visible;
         Debug.Log($"Dog visibility set to: {visible}"); // 调试输出
 
@@ -175,3 +245,5 @@ public class DogController : MonoBehaviour
         }
     }
 }
+
+
