@@ -26,7 +26,13 @@ public class PlayerController : MonoBehaviour
     private bool isSpeedActive = false; // 是否正在使用加速技能
     private QuickStrikeManager strikeSc;
     public Transform spriteTransform; // 子对象的Transform，用于翻转动画
-    public AudioSource slipsound,SpeedUp;
+    public AudioSource slipsound, SpeedUp;
+
+    public GameObject WarningObject; // 用于显示警告的对象
+    public Transform dog; // 狗的 Transform
+    private bool isWarningActive = false; // 警告是否激活
+
+    public Animator animator; // 自定义的Animator
 
     void Start()
     {
@@ -46,6 +52,9 @@ public class PlayerController : MonoBehaviour
         SpeedReadyPrompt.SetActive(false);
         SpeedSkillBar.fillAmount = 0; // 初始化技能条为0
         UpdateSkillIconPosition(0); // 初始化图标位置
+
+        // 初始化警告对象为隐藏状态
+        WarningObject.SetActive(false);
     }
 
     void Update()
@@ -60,6 +69,9 @@ public class PlayerController : MonoBehaviour
         {
             StartCoroutine(ActivateSpeedSkill());
         }
+
+        // 检测狗是否进入或离开范围
+        CheckDogDistance();
     }
 
     void Move()
@@ -109,13 +121,31 @@ public class PlayerController : MonoBehaviour
     {
         if (!slipsound.isPlaying)
             slipsound.Play();
+
+        // 触发Animator中的Slip Trigger
+        if (animator != null)
+        {
+            animator.SetTrigger("Slip");
+        }
+
+        // 在摔倒时，将玩家的 scale.x 设置为行走时的相反方向
+        Vector3 localScale = spriteTransform.localScale;
+        localScale.x = -localScale.x; // 反转 x 轴
+        spriteTransform.localScale = localScale;
+
         canMove = false; // 禁用移动
         SlipBar.SetActive(true);
         rb.velocity = Vector3.zero; // 停止移动
         yield return new WaitForSeconds(slipTime); // 滑倒持续1秒
+
+        // 恢复移动时，恢复原始的 scale.x
+        localScale.x = -localScale.x; // 再次反转 x 轴，回到原始方向
+        spriteTransform.localScale = localScale;
+
         canMove = true; // 恢复移动
         SlipBar.SetActive(false);
     }
+
 
     private void UnlockSpeedSkill()
     {
@@ -162,20 +192,38 @@ public class PlayerController : MonoBehaviour
             elapsedTime += Time.deltaTime;
             float progress = 1 - elapsedTime / speedDuration;
             SpeedSkillBar.fillAmount = progress; // 填充技能条
-            UpdateSkillIconPosition(progress); // 更新图标位置
             yield return null;
         }
 
         moveSpeed /= speedMultiplier; // 恢复原始速度
         isSpeedActive = false;
-
-        SpeedSkillBar.fillAmount = 1; // 技能条重置
-        UpdateSkillIconPosition(0); // 重置图标位置
-
         SpeedSkillBarContainer.SetActive(false); // 隐藏技能条
-        SpeedSkillIconContainer.SetActive(true); // 恢复显示技能图标
-
+        SpeedSkillIconContainer.SetActive(true); // 显示技能图标
         StartCoroutine(SpeedCooldown()); // 开始冷却
+    }
+
+    private void CheckDogDistance()
+    {
+        float distance = Vector3.Distance(transform.position, dog.position);
+
+        // 如果狗进入3米范围
+        if (distance <= 3f)
+        {
+            if (!isWarningActive)
+            {
+                WarningObject.SetActive(true);
+                isWarningActive = true;
+            }
+        }
+        // 如果狗离开3米范围
+        else
+        {
+            if (isWarningActive)
+            {
+                WarningObject.SetActive(false);
+                isWarningActive = false;
+            }
+        }
     }
 
     private void UpdateSkillIconPosition(float progress)

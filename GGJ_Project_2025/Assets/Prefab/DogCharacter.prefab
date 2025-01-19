@@ -103,6 +103,7 @@ MonoBehaviour:
   DogAppear: {fileID: 849278588193649816}
   DogBreath: {fileID: 5025101485924068613}
   spriteTransform: {fileID: 343726459919363716}
+  animator: {fileID: 2101988093748223847}
   dogBreathVfx: {fileID: 0}
   dogDisappearVfx: {fileID: 0}
 --- !u!82 &849278588193649816

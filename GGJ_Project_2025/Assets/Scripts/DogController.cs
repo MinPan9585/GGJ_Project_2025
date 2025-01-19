@@ -38,7 +38,7 @@ public class DogController : MonoBehaviour
     public Transform spriteTransform; // 子对象的Transform，用于翻转动画
 
     // 新增代码：Animator 组件
-    private Animator animator; // Animator 组件
+    public Animator animator; // Animator 组件
 
     [HideInInspector]
     public GameObject dogBreathVfx;
@@ -70,13 +70,6 @@ public class DogController : MonoBehaviour
         if (spriteTransform == null)
         {
             spriteTransform = transform.GetChild(0); // 假设子对象是第一个子物体
-        }
-
-        // 新增代码：初始化 Animator
-        animator = GetComponent<Animator>();
-        if (animator == null)
-        {
-            Debug.LogWarning("Animator component not found on the GameObject!");
         }
     }
 
@@ -132,6 +125,7 @@ public class DogController : MonoBehaviour
                     if (!isForcingReveal)
                     {
                         Instantiate(dogBreathVfx, transform.position, Quaternion.identity);
+
                         // 插入狗甩干的声音
                         if (DogAppear != null)
                         {
@@ -147,6 +141,7 @@ public class DogController : MonoBehaviour
         // 新增代码：更新 Animator 参数
         if (animator != null)
         {
+            Debug.Log("set animator IsStaying to  ----  " + !isMoving);
             animator.SetBool("IsStaying", !isMoving); // 如果狗在移动，设置 IsStaying 为 false；否则为 true
         }
 
