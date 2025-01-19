@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: ddc262bb1f3a20949884433c2b589e8f
+guid: aa589d8a7f1abd94ab30c5b393787c46
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -108,7 +108,91 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: DogRun_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 2017
+        height: 1953
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a0e5ef3c5dc5bf043be0984c93bd0d30
+      internalID: 619815489
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DogRun_1
+      rect:
+        serializedVersion: 2
+        x: 2017
+        y: 0
+        width: 2017
+        height: 1953
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 34e1540cf398eaa4cb8fa537775112ce
+      internalID: -337170941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DogRun_2
+      rect:
+        serializedVersion: 2
+        x: 4034
+        y: 0
+        width: 2017
+        height: 1953
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 01c790817fd166747b0db0eab57a558e
+      internalID: 1546100231
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DogRun_3
+      rect:
+        serializedVersion: 2
+        x: 6051
+        y: 0
+        width: 2017
+        height: 1953
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b78f40bf340c8694eacac0a12a096e78
+      internalID: 399568728
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -119,7 +203,11 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      DogRun_0: 619815489
+      DogRun_1: -337170941
+      DogRun_2: 1546100231
+      DogRun_3: 399568728
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

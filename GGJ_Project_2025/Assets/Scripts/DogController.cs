@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI; // 引入 UI 命名空间
+using UnityEngine.UI;
 using UnityEngine.Audio;
 
 public class DogController : MonoBehaviour
@@ -18,12 +18,23 @@ public class DogController : MonoBehaviour
     public float stopBufferTime = 0.2f; // 缓冲时间，当狗速度接近零时使用
     private float stopBufferTimer = 0f; // 当前缓冲计时器
 
-    // 引用 UI Image 组件
     public Image countdownBar;
+    public Image countdownFrame; // 外框的 Image 组件
+
+    public Color colorStage1; // 第一阶段颜色
+    public Color colorStage2; // 第二阶段颜色
+    public Color colorStage3; // 第三阶段颜色
+
+    public Sprite frameStage1; // 第一阶段外框
+    public Sprite frameStage2; // 第二阶段外框
+    public Sprite frameStage3; // 第三阶段外框
 
     private Coroutine fillBarCoroutine; // 用于平滑回满的协程
     private QuickStrikeManager strikeSc;
+    public GameObject dog2DObj;
     public AudioSource DogAppear, DogBreath;
+
+    public Transform spriteTransform; // 子对象的Transform，用于翻转动画
 
     private void Start()
     {
@@ -40,6 +51,12 @@ public class DogController : MonoBehaviour
         {
             countdownBar.fillAmount = 1f;
         }
+
+        // 如果没有手动设置 spriteTransform，可以尝试自动获取
+        if (spriteTransform == null)
+        {
+            spriteTransform = transform.GetChild(0); // 假设子对象是第一个子物体
+        }
     }
 
     private void Update()
@@ -55,7 +72,7 @@ public class DogController : MonoBehaviour
     private void HandleMovement()
     {
         // 获取输入
-        float moveX = Input.GetAxis("Horizontal"); //wasd
+        float moveX = Input.GetAxis("Horizontal"); // WASD
         float moveZ = Input.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(moveX, 0, moveZ).normalized;
@@ -92,16 +109,29 @@ public class DogController : MonoBehaviour
                     // 如果狗停止移动且不在强制现身状态，则主动现身
                     if (!isForcingReveal)
                     {
+                        // 插入狗甩干的声音
+                        if (DogAppear != null)
+                        {
+                            if (!DogAppear.isPlaying)
+                                DogAppear.Play();
+                        }
                         SetVisibility(true);
                     }
                 }
             }
         }
+
+        // 翻转动画
+        if (moveX != 0) // 只有在水平移动时才翻转
+        {
+            Vector3 localScale = spriteTransform.localScale;
+            localScale.x = moveX > 0 ? -Mathf.Abs(localScale.x) : Mathf.Abs(localScale.x);
+            spriteTransform.localScale = localScale;
+        }
     }
 
     private void HandleHideTimer()
     {
-        // 如果狗不可见且不在强制现身状态，开始倒计时
         if (!isVisible && !isForcingReveal)
         {
             currentHideTimer -= Time.deltaTime;
@@ -114,20 +144,51 @@ public class DogController : MonoBehaviour
 
     private void UpdateCountdownBar()
     {
-        // 更新进度条的填充比例
         if (countdownBar != null)
         {
             if (!isVisible && !isForcingReveal) // 狗不可见且不在强制现身状态
             {
                 countdownBar.fillAmount = currentHideTimer / hideTimer;
+
+                // 根据进度条阶段设置颜色和外框
+                float progress = countdownBar.fillAmount;
+
+                if (progress > 2f / 3f) // 第一阶段
+                {
+                    countdownBar.color = colorStage1;
+                    if (countdownFrame != null)
+                    {
+                        countdownFrame.sprite = frameStage1;
+                    }
+                }
+                else if (progress > 1f / 3f) // 第二阶段
+                {
+                    countdownBar.color = colorStage2;
+                }
+                else // 第三阶段
+                {
+                    countdownBar.color = colorStage3;
+                    if (countdownFrame != null)
+                    {
+                        countdownFrame.sprite = frameStage2;
+                    }
+                }
             }
-            else
+            else if (isVisible) // 狗现身时
             {
-                // 如果需要回满，启动平滑过渡协程
+                if (countdownFrame != null)
+                {
+                    countdownFrame.sprite = frameStage3;
+                }
+
                 if (fillBarCoroutine == null)
                 {
                     fillBarCoroutine = StartCoroutine(SmoothFillBar());
                 }
+            }
+            else if (isForcingReveal) // 如果狗正在强制现身，进度条保持空
+            {
+                countdownBar.fillAmount = 0f;
             }
         }
     }
@@ -138,6 +199,8 @@ public class DogController : MonoBehaviour
         float startFill = countdownBar.fillAmount; // 当前填充值
         float targetFill = 1f; // 目标填充值
         float elapsedTime = 0f;
+
+        countdownBar.color = colorStage1;
 
         while (elapsedTime < duration)
         {
@@ -152,103 +215,45 @@ public class DogController : MonoBehaviour
 
     public System.Collections.IEnumerator ForceReveal()
     {
-        if (isForcingReveal) yield break; // 防止重复调用
+        if (isForcingReveal) yield break;
 
-        isForcingReveal = true; // 标记为强制现身状态
-        Debug.Log("Dog is forced to reveal!"); // 调试输出
-                                               // 播放喘气声音
-        DogBreath.Play();
+        isForcingReveal = true;
+        Debug.Log("Dog is forced to reveal!");
 
-        // 等待喘气声音播放结束
-        yield return new WaitForSeconds(DogBreath.clip.length);
+        SetVisibility(true);
 
-        SetVisibility(true); // 强制现身
-
-        // 等待强制现身计时器完成
         yield return new WaitForSeconds(forceRevealTimer);
 
-        // 强制现身结束后
-        isForcingReveal = false; // 退出强制现身状态
+        isForcingReveal = false;
 
-        if (isMoving) // 如果狗正在移动
+        if (isMoving)
         {
-            SetVisibility(false); // 重新隐藏狗
-            currentHideTimer = hideTimer; // 重置隐藏计时器
+            SetVisibility(false);
+            currentHideTimer = hideTimer;
         }
-        else // 如果狗未移动
+        else
         {
-            SetVisibility(true); // 保持现身状态
+            SetVisibility(true);
         }
     }
 
     private void SetVisibility(bool visible)
     {
-        // 如果狗正在强制现身，不允许其他逻辑覆盖可见性
         if (isForcingReveal && !visible) return;
 
-        bool wasVisible = isVisible; // 记录之前的状态
+        bool wasVisible = isVisible;
         isVisible = visible;
-        //插入狗甩干的声音
-        if (visible)
+
+        if (dog2DObj != null)
         {
-            if (!DogAppear.isPlaying)
-                DogAppear.Play();
-        }
-        else
-        {
-            if (DogAppear.isPlaying)
-                DogAppear.Stop();
+            dog2DObj.gameObject.SetActive(visible);
         }
 
-        meshRenderer.enabled = visible;
-        Debug.Log($"Dog visibility set to: {visible}"); // 调试输出
-
-        // 通知所有触发区域内的泡泡重新检测状态
-        NotifyNearbyBubbles(wasVisible);
-    }
-
-    private void NotifyNearbyBubbles(bool wasVisible)
-    {
-        float detectionRadius = 0.8f; // 调整检测范围，确保覆盖泡泡的触发范围
-        Collider[] colliders = Physics.OverlapSphere(transform.position, detectionRadius);
-        //Debug.Log($"Detected {colliders.Length} bubbles in range."); // 打印检测到的泡泡数量
-
-        foreach (Collider collider in colliders)
+        if (visible && countdownBar != null && fillBarCoroutine == null)
         {
-            GameObject obj = collider.gameObject;
-            if (obj.CompareTag("Bubble"))
-            {
-                BubbleController bubble = obj.GetComponent<BubbleController>();
-                if (bubble != null)
-                {
-                    // 如果狗从隐身变为现身，主动通知泡泡
-                    if (!wasVisible && isVisible)
-                    {
-                        bubble.OnTriggerEnter(GetComponent<Collider>());
-                    }
-
-                    // 通知泡泡重新检测状态
-                    bubble.CheckEntityStatus();
-                }
-            }
+            fillBarCoroutine = StartCoroutine(SmoothFillBar());
         }
-    }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Bubble"))
-        {
-            BubbleController bubble = other.GetComponent<BubbleController>();
-            if (bubble != null)
-            {
-                // 如果泡泡已经隐藏，且狗是隐身状态，则强制现身
-                if (!bubble.IsVisible() && !isVisible && !isForcingReveal)
-                {
-                    StartCoroutine(ForceReveal());
-                }
-            }
-        }
+        Debug.Log($"Dog visibility set to: {visible}");
     }
 }
-
-
